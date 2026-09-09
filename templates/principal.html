@@ -1,0 +1,2173 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gestión de Ficha - SENA</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    <style>
+
+        body {
+            background: #f5f7fa;
+            font-family: Arial, sans-serif;
+        }
+
+        .topbar {
+            height: 70px;
+            background: white;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+        }
+
+        .logo-sena {
+            height: 48px;
+        }
+
+        .contenido-principal {
+            padding: 25px;
+        }
+
+        .card {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+        }
+
+        .cabecera-ficha {
+            background: white;
+            padding: 25px;
+        }
+
+        .cabecera-ficha h2 {
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .dato-card {
+            background: white;
+            padding: 22px;
+            height: 100%;
+        }
+
+        .dato-icono {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            background: #eef5ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1266d6;
+            font-size: 20px;
+        }
+
+        .dato-titulo {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .dato-valor {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .avance-card {
+            background: white;
+            padding: 20px;
+            height: 100%;
+        }
+
+        .avance-numero {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .barra {
+            height: 12px;
+            background: #e9eef5;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .barra-progreso {
+            height: 100%;
+            border-radius: 20px;
+        }
+
+        .tabla-contenedor {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .tabla-scroll {
+            overflow-x: auto;
+        }
+
+        .tabla-actividades {
+            min-width: 1500px;
+            font-size: 13px;
+        }
+
+        .tabla-actividades th {
+            background: #f5f7fa;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 12px;
+        }
+
+        .tabla-actividades td {
+            vertical-align: middle;
+        }
+
+        .tabla-actividades th:nth-child(9),
+        .tabla-actividades td:nth-child(9) {
+            min-width: 200px;
+        }
+
+        .tabla-actividades th:nth-child(10),
+        .tabla-actividades td:nth-child(10) {
+            min-width: 160px;
+        }
+
+        .tabla-actividades select.form-select {
+            min-width: 100%;
+            width: 100%;
+        }
+
+        .estado {
+            font-weight: bold;
+            padding: 7px 15px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .estado-retrasada {
+            background: #ffe1e1;
+            color: #dc2626;
+        }
+
+        .estado-normal {
+            background: #dff7e8;
+            color: #15803d;
+        }
+
+        .estado-proceso {
+            background: #fff3cd;
+            color: #a16207;
+        }
+
+        /* El color pertenece únicamente al registro cuyo estado cambió. */
+        .plan-fila-aprobado td { background:#dcfce7 !important; }
+        .plan-fila-pendiente td { background:#fef3c7 !important; }
+        .plan-fila-ejecucion td { background:#dbeafe !important; }
+        .plan-fila-sin-calificar td { background:#fee2e2 !important; }
+        .plan-fila-aprobado td:first-child { border-left:4px solid #16a34a; }
+        .plan-fila-pendiente td:first-child { border-left:4px solid #f59e0b; }
+        .plan-fila-ejecucion td:first-child { border-left:4px solid #2563eb; }
+        .plan-fila-sin-calificar td:first-child { border-left:4px solid #dc2626; }
+        .plan-estado-select.estado-aprobado { border-color:#16a34a; background:#dcfce7; }
+        .plan-estado-select.estado-pendiente { border-color:#f59e0b; background:#fef3c7; }
+        .plan-estado-select.estado-ejecucion { border-color:#2563eb; background:#dbeafe; }
+        .plan-estado-select.estado-sin-calificar { border-color:#dc2626; background:#fee2e2; color:#991b1b; }
+        .plan-toolbar { display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; width:100%; }
+        .plan-search-wrap { position:relative; flex:1 1 430px; min-width:280px; }
+        .plan-search-wrap i { position:absolute; left:13px; top:11px; color:#6b7280; z-index:2; }
+        #busquedaPlan { padding-left:38px; }
+        .plan-actions { display:flex; align-items:center; flex-wrap:wrap; }
+        .fase-nav { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:14px; }
+        .fase-nav .btn { border-radius:20px; }
+        .fase-nav .fase-info { margin-left:auto; color:#6b7280; font-size:13px; }
+        .plan-instructor-input { min-width:210px; }
+        .alerta-trimestre { border-left:5px solid #f59e0b; }
+        .historial-horarios { margin-top:18px; }
+
+        .boton-verde {
+            background: #198754;
+            color: white;
+            border: none;
+        }
+
+        .boton-verde:hover {
+            background: #157347;
+            color: white;
+        }
+
+        .boton-azul {
+            background: #0d6efd;
+            color: white;
+            border: none;
+        }
+
+        .usuario {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .usuario i {
+            font-size: 22px;
+        }
+
+        .estadisticas {
+            background: white;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .estadistica {
+            text-align: center;
+            border-right: 1px solid #ddd;
+        }
+
+        .estadistica:last-child {
+            border-right: none;
+        }
+
+        .estadistica-titulo {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .estadistica-numero {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+    
+        /* Paleta oficial SENA del login */
+        :root {
+            --sena-verde: #39A900;
+            --sena-verde-oscuro: #2E7D32;
+            --sena-fondo: #f5f7fa;
+        }
+        body { background: var(--sena-fondo) !important; }
+        .topbar { border-bottom: 2px solid rgba(57,169,0,.15) !important; }
+        .tabla-contenedor, .estadisticas, .cabecera-ficha, .dato-card, .avance-card { border-radius: 14px !important; }
+        .boton-verde, .btn-success { background: var(--sena-verde) !important; border-color: var(--sena-verde) !important; }
+        .boton-verde:hover, .btn-success:hover { background: var(--sena-verde-oscuro) !important; border-color: var(--sena-verde-oscuro) !important; }
+        .btn-outline-primary { color: var(--sena-verde) !important; border-color: var(--sena-verde) !important; }
+        .btn-outline-primary:hover { color: #fff !important; background: var(--sena-verde) !important; }
+        .text-primary { color: var(--sena-verde-dark, #2E7D32) !important; }
+        .bg-primary { background-color: var(--sena-verde) !important; }
+        .barra-progreso.bg-primary { background-color: var(--sena-verde) !important; }
+        .seccion-notas-ficha { border-left: 5px solid var(--sena-verde); }
+        .seccion-notas-ficha .notas-badge { color: var(--sena-verde-oscuro); font-weight: 600; }
+.autocomplete-wrap{position:relative}.autocomplete-list{position:absolute;left:0;right:0;top:100%;z-index:1065;background:#fff;border:1px solid #d9dee5;border-radius:0 0 10px 10px;box-shadow:0 8px 20px rgba(0,0,0,.12);max-height:230px;overflow:auto}.autocomplete-item{padding:9px 12px;cursor:pointer}.autocomplete-item:hover{background:#eef8e9}.autocomplete-empty{padding:9px 12px;color:#6b7280}</style>
+
+</head>
+
+<body>
+
+<!-- =====================================================
+     BARRA SUPERIOR
+===================================================== -->
+
+<header class="topbar">
+
+    <div>
+
+        <img
+            src="{{ url_for('static', filename='img/logo.png') }}"
+            class="logo-sena"
+        >
+
+    </div>
+
+    <div class="usuario">
+
+        <i class="fa-regular fa-bell"></i>
+
+        <span id="nombreUsuario">
+            Usuario
+        </span>
+
+        <button
+            class="btn btn-outline-secondary btn-sm"
+            id="btnSalir"
+        >
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            Salir
+
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- =====================================================
+     CONTENIDO PRINCIPAL
+===================================================== -->
+
+<main class="contenido-principal">
+
+    <!-- =================================================
+         CABECERA DE FICHA
+    ================================================== -->
+
+    <div class="card cabecera-ficha mb-3">
+
+        <div class="d-flex justify-content-between align-items-center">
+
+            <div>
+
+                <div class="mb-2">
+
+                    <button
+                        class="btn btn-sm btn-outline-secondary"
+                        id="btnVolver"
+                    >
+
+                        <i class="fa-solid fa-arrow-left"></i>
+
+                    </button>
+
+                </div>
+
+                <h2>
+
+                    Ficha:
+
+                    <span id="numeroFicha">
+                        Cargando...
+                    </span>
+
+                </h2>
+
+                <div>
+
+                    <strong>Programa:</strong>
+
+                    <span id="nombrePrograma">
+                        Cargando...
+                    </span>
+
+                </div>
+
+                <div class="mt-1">
+
+                    <strong>Modalidad:</strong>
+
+                    <span id="modalidad">
+                        Presencial
+                    </span>
+
+                    &nbsp; | &nbsp;
+
+                    <strong>Jornada:</strong>
+
+                    <span id="jornada">
+                        Mañana
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         DATOS DE LA FICHA
+    ================================================== -->
+
+    <div class="row g-3">
+
+        <div class="col-md-3">
+
+            <div class="card dato-card">
+
+                <div class="d-flex gap-3 align-items-center">
+
+                    <div class="dato-icono">
+
+                        <i class="fa-regular fa-calendar"></i>
+
+                    </div>
+
+                    <div>
+
+                        <div class="dato-titulo">
+                            Fecha de inicio
+                        </div>
+
+                        <div
+                            class="dato-valor"
+                            id="fechaInicio"
+                        >
+                            --
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-3">
+
+            <div class="card dato-card">
+
+                <div class="d-flex gap-3 align-items-center">
+
+                    <div class="dato-icono">
+
+                        <i class="fa-regular fa-calendar-check"></i>
+
+                    </div>
+
+                    <div>
+
+                        <div class="dato-titulo">
+                            Fecha de finalización
+                        </div>
+
+                        <div
+                            class="dato-valor"
+                            id="fechaFin"
+                        >
+                            --
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-3">
+
+            <div class="card dato-card">
+
+                <div class="d-flex gap-3 align-items-center">
+
+                    <div class="dato-icono">
+
+                        <i class="fa-solid fa-users"></i>
+
+                    </div>
+
+                    <div>
+
+                        <div class="dato-titulo">
+                            Duración total
+                        </div>
+
+                        <div
+                            class="dato-valor"
+                            id="duracion"
+                        >
+                            --
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-3">
+
+            <div class="card dato-card">
+
+                <div class="d-flex gap-3 align-items-center">
+
+                    <div class="dato-icono">
+
+                        <i class="fa-regular fa-clock"></i>
+
+                    </div>
+
+                    <div>
+
+                        <div class="dato-titulo">
+                            Tiempo transcurrido
+                        </div>
+
+                        <div
+                            class="dato-valor"
+                            id="tiempoTranscurrido"
+                        >
+                            --
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         AVANCE
+    ================================================== -->
+
+    <div class="row g-3 mt-1">
+
+        <div class="col-md-4">
+
+            <div class="card avance-card text-center">
+
+                <strong>
+                    AVANCE TIEMPO FICHA
+                </strong>
+
+                <div
+                    class="avance-numero text-primary mt-2"
+                    id="avanceEsperado"
+                >
+                    0%
+                </div>
+
+                <div class="barra mt-2">
+
+                    <div
+                        class="barra-progreso bg-primary"
+                        id="barraEsperado"
+                        style="width:0%"
+                    ></div>
+
+                </div>
+
+                <small class="text-muted">
+                    De acuerdo a las fechas de inicio y fin
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-4">
+
+            <div class="card avance-card text-center">
+
+                <strong>
+                    AVANCE RESULTADOS
+                </strong>
+
+                <div
+                    class="avance-numero text-success mt-2"
+                    id="avanceReal"
+                >
+                    0%
+                </div>
+
+                <div class="barra mt-2">
+
+                    <div
+                        class="barra-progreso bg-success"
+                        id="barraReal"
+                        style="width:0%"
+                    ></div>
+
+                </div>
+
+                <small class="text-muted">
+                    Basado en actividades finalizadas
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-4">
+
+            <div class="card avance-card text-center">
+
+                <strong>
+                    DIFERENCIA
+                </strong>
+
+                <div
+                    class="avance-numero text-danger mt-2"
+                    id="diferencia"
+                >
+                    0%
+                </div>
+
+                <small class="text-muted">
+                    Comparación entre el avanze del tiempo de la ficha a avance de resultados finalizados
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         ACTIVIDADES
+    ================================================== -->
+
+    <div class="tabla-contenedor">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <h4>
+                Plan Pedagogico 
+            </h4>
+
+            <div class="plan-toolbar">
+                <div class="plan-search-wrap" id="contenedorBusquedaPlan" style="display:none;">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input id="busquedaPlan" class="form-control" type="search" placeholder="Buscar en fase, actividad, competencia, resultado, actividad de aprendizaje, instructor, juicio de evaluación o trimestre..." autocomplete="off">
+                </div>
+                <div class="plan-actions">
+                <button
+                    class="btn btn-outline-primary me-2"
+                    id="btnImportar"
+                >
+
+                    <i class="fa-solid fa-file-excel"></i>
+
+                    Importar Excel
+
+                </button>
+
+                <button
+                    class="btn btn-outline-danger me-2"
+                    id="btnBorrarExcel"
+                    type="button"
+                    style="display:none;"
+                >
+                    <i class="fa-solid fa-trash"></i>
+                    Borrar plan de formación
+                </button>
+
+                <input type="file" id="archivoJuiciosEvaluativosPrincipal" accept=".xlsx,.xls,.csv" hidden>
+                <button
+                    class="btn btn-outline-primary me-2"
+                    id="btnJuiciosEvaluativosPrincipal"
+                    type="button"
+                    style="display:none;"
+                >
+                    <i class="fa-solid fa-file-import"></i>
+                    Juicios evaluativos
+                </button>
+
+                <button
+                    class="btn boton-verde"
+                    id="btnAgregar"
+                >
+
+                    <i class="fa-solid fa-plus"></i>
+
+                    Agregar actividad
+
+                </button>
+                </div>
+            </div>
+
+            <div id="navegacionFases" class="fase-nav"></div>
+
+        </div>
+
+        <datalist id="listaInstructoresPlan"></datalist>
+
+        <div class="tabla-scroll">
+
+            <table class="table table-bordered tabla-actividades">
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>FASE DE PROYECTO</th>
+
+                        <th>ACTIVIDAD DE PROYECTO</th>
+
+                        <th>COMPETENCIA</th>
+
+                        <th>RESULTADOS DE APRENDIZAJE</th>
+
+                        <th>ACTIVIDADES DE APRENDIZAJE A DESARROLLAR</th>
+
+                        <th>HORAS TRABAJO DIRECTO</th>
+
+                        <th>HORAS TRABAJO INDEPENDIENTE</th>
+
+                        <th>INSTRUCTOR</th>
+
+                        <th>JUICIO DE EVALUACIÓN</th>
+
+                        
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="tablaActividades">
+
+                    <tr>
+
+                        <td
+                            colspan="10"
+                            class="text-center"
+                        >
+
+                            Cargando actividades...
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         ESTADÍSTICAS
+    ================================================== -->
+
+    <div class="estadisticas">
+
+        <div class="row">
+
+            <div class="col-md-3 estadistica">
+
+                <div class="estadistica-titulo">
+                    Total de RAPS
+                </div>
+
+                <div
+                    class="estadistica-numero"
+                    id="totalActividades"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3 estadistica">
+
+                <div class="estadistica-titulo">
+                    RAPS calificadas
+                </div>
+
+                <div
+                    class="estadistica-numero text-success"
+                    id="actividadesFinalizadas"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3 estadistica">
+
+                <div class="estadistica-titulo">
+                    RAPS en ejecución
+                </div>
+
+                <div
+                    class="estadistica-numero text-warning"
+                    id="actividadesProceso"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3 estadistica">
+
+                <div class="estadistica-titulo">
+                    RAPS pendientes / sin calificar
+                </div>
+
+                <div
+                    class="estadistica-numero text-danger"
+                    id="actividadesPendientes"
+                >
+                    0
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         HORARIO DE LA FICHA
+    ================================================== -->
+
+    <div class="tabla-contenedor" id="seccionHorario">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <div class="d-flex align-items-center gap-3">
+                <h4 class="mb-0">Horario</h4>
+                <span id="trimestreActualHorario" class="badge text-bg-primary">Calculando trimestre...</span>
+            </div>
+
+            <div>
+
+                <button
+                    class="btn btn-outline-primary me-2"
+                    id="btnImportarHorario"
+                >
+
+                    <i class="fa-solid fa-file-excel"></i>
+
+                    Importar Horario
+
+                </button>
+<button
+                    class="btn btn-outline-success me-2"
+                    id="btnExportarHorario"
+                    style="display:none;"
+                >
+
+                    <i class="fa-solid fa-download"></i>
+
+                    Exportar Horario
+
+                </button>
+
+                <button
+                    class="btn btn-outline-danger me-2"
+                    id="btnEliminarTodosHorario"
+                    style="display:none;"
+                >
+                    <i class="fa-solid fa-trash"></i>
+                    Eliminar horario
+                </button>
+
+                <button
+                    class="btn boton-verde"
+                    id="btnAgregarHorario"
+                >
+                    <i class="fa-solid fa-plus"></i>
+                    Agregar horario
+                </button>
+
+            </div>
+
+        </div>
+
+        <div id="alertaTrimestreHorario" class="alert alert-warning alerta-trimestre d-none">
+            <i class="fa-solid fa-triangle-exclamation me-2"></i>
+            <strong>Nuevo trimestre:</strong> han pasado tres meses desde el último cambio de horario. Carga el horario correspondiente al nuevo trimestre para esta ficha.
+        </div>
+
+        <div class="tabla-scroll">
+
+            <table class="table table-bordered tabla-actividades">
+
+                <thead>
+
+                    <tr>
+
+                        <th>DÍA</th>
+
+                        <th>HORA INICIO</th>
+
+                        <th>HORA FIN</th>
+
+                        <th>COMPETENCIA</th>
+
+                        <th>RESULTADO DE APRENDIZAJE</th>
+
+                        <th>AMBIENTE</th>
+
+                        <th>INSTRUCTOR</th>
+
+                        <th>TRIMESTRE</th>
+
+                        <th>ACCIONES</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="tablaHorario">
+
+                    <tr>
+
+                        <td
+                            colspan="9"
+                            class="text-center"
+                        >
+
+                            El horario de esta ficha aún no ha sido cargado.
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="historial-horarios d-flex justify-content-end mt-3">
+            <button type="button" class="btn btn-outline-primary" id="btnHistorialHorario">
+                <i class="fa-solid fa-clock-rotate-left me-1"></i> Historial
+            </button>
+        </div>
+
+    </div>
+
+</main>
+
+
+<!-- =====================================================
+     MODAL IMPORTAR EXCEL
+===================================================== -->
+<div class="modal fade" id="modalImportar" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <div>
+          <h5 class="modal-title mb-1"><i class="fa-solid fa-file-excel me-2"></i>Importar Plan de Formación</h5>
+          <small>Ficha: <strong id="importFichaModal">—</strong></small>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-lg-4">
+            <div class="card h-100 border-0 bg-light">
+              <div class="card-body">
+                <h6 class="fw-bold"><i class="fa-solid fa-circle-info me-1"></i>Antes de importar</h6>
+                <p class="small text-muted">Descarga la plantilla para conservar los nombres de columnas y evitar errores.</p>
+                <button type="button" class="btn btn-outline-success btn-sm w-100 mb-3" id="btnPlantillaPrincipal"><i class="fa-solid fa-download me-1"></i>Descargar plantilla</button>
+                <button type="button" class="btn btn-link btn-sm p-0" id="btnMostrarColumnasPrincipal">Ver columnas esperadas</button>
+                <div id="columnasPlantillaPrincipal" class="small mt-2 d-none"></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-8">
+            <label class="form-label fw-semibold">Archivo Excel</label>
+            <input type="file" id="archivoExcel" class="form-control" accept=".xlsx,.xls,.csv">
+            <div id="estadoImportacionPrincipal" class="small text-muted mt-2"></div>
+            <div class="d-flex align-items-center justify-content-between mt-3">
+              <span class="fw-semibold">Vista previa</span>
+              <span class="badge text-bg-light" id="contadorPreviewExcel">0 filas</span>
+            </div>
+            <div id="previewExcelPrincipal" class="preview-import mt-2 border rounded p-2">
+              <div class="empty-preview"><i class="fa-solid fa-table-list"></i><span>Seleccione un archivo para ver la vista previa.</span></div>
+            </div>
+            <div class="small text-muted mt-2">Filas detectadas: <strong id="resumenFilasExcel">0</strong></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-outline-success" id="btnVistaPreviaExcel"><i class="fa-solid fa-eye me-1"></i>Generar vista previa</button>
+        <button type="button" class="btn btn-success d-none" id="btnSubirExcel"><i class="fa-solid fa-check me-2"></i>Confirmar importación</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =====================================================
+     MODAL AGREGAR ACTIVIDAD MANUAL
+===================================================== -->
+<div class="modal fade" id="modalAgregarActividad" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">Agregar actividad al plan de formación</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div class="col-md-6"><label class="form-label">Fase de proyecto</label><div class="autocomplete-wrap"><input id="manualFase" class="form-control" autocomplete="off" placeholder="Haga clic para ver fases o escriba para buscar"><input type="hidden" id="manualFaseId"><div id="manualFaseSuggestions" class="autocomplete-list d-none"></div></div></div>
+                    <div class="col-md-6"><label class="form-label">Actividad de proyecto</label><div class="autocomplete-wrap"><input id="manualActividadProyecto" class="form-control" autocomplete="off" placeholder="Haga clic para ver actividades o escriba para buscar"><input type="hidden" id="manualActividadProyectoId"><div id="manualActividadProyectoSuggestions" class="autocomplete-list d-none"></div></div></div>
+                    <div class="col-md-6"><label class="form-label">Competencia *</label><div class="autocomplete-wrap"><input id="manualCompetencia" class="form-control" autocomplete="off" placeholder="Escribe para buscar competencia"><input type="hidden" id="manualCompetenciaId"><div id="manualCompetenciaSuggestions" class="autocomplete-list d-none"></div></div></div>
+                    <div class="col-md-6"><label class="form-label">Resultado de aprendizaje *</label><div class="autocomplete-wrap"><textarea id="manualResultado" class="form-control" rows="2" autocomplete="off" placeholder="Haga clic para ver resultados o escriba para buscar"></textarea><input type="hidden" id="manualResultadoId"><div id="manualResultadoSuggestions" class="autocomplete-list d-none"></div></div></div>
+                    <div class="col-12"><label class="form-label">Actividad de aprendizaje</label><div class="autocomplete-wrap"><textarea id="manualActividadAprendizaje" class="form-control" rows="3" autocomplete="off" placeholder="Escribe para buscar una actividad ya existente"></textarea><input type="hidden" id="manualActividadAprendizajeId"><div id="manualActividadSuggestions" class="autocomplete-list d-none"></div></div></div>
+                    <div class="col-md-3"><label class="form-label">Trimestre de la ficha</label><input id="manualTrimestre" type="number" min="1" class="form-control" value="1" readonly></div>
+                    <div class="col-md-3"><label class="form-label">Horas directas</label><input id="manualHorasDirectas" type="number" min="0" class="form-control" value="0"></div>
+                    <div class="col-md-3"><label class="form-label">Horas independientes</label><input id="manualHorasIndependientes" type="number" min="0" class="form-control" value="0"></div>
+                    <div class="col-md-3"><label class="form-label">Instructor</label><div class="autocomplete-wrap"><input id="manualInstructor" class="form-control" autocomplete="off" placeholder="Escribe para buscar"><input type="hidden" id="manualInstructorId"><div id="manualInstructorSuggestions" class="autocomplete-list d-none"></div></div></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn btn-success" id="btnGuardarActividadManual"><i class="fa-solid fa-save"></i> Guardar actividad</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- =====================================================
+     MODAL HISTORIAL DE HORARIOS
+===================================================== -->
+<div class="modal fade" id="modalHistorialHorario" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="fa-solid fa-clock-rotate-left me-2"></i>Historial de horarios guardados</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div id="listaHistorialHorario">
+                    <div class="text-center text-muted py-3">Cargando historial...</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- =====================================================
+     MODAL IMPORTAR HORARIO
+===================================================== -->
+<div class="modal fade" id="modalImportarHorario" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <div>
+          <h5 class="modal-title mb-1"><i class="fa-solid fa-calendar-days me-2"></i>Importar horario</h5>
+          <small>Ficha: <strong id="importFichaHorarioModal">—</strong></small>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-lg-4">
+            <div class="card h-100 border-0 bg-light">
+              <div class="card-body">
+                <h6 class="fw-bold"><i class="fa-solid fa-circle-info me-1"></i>Plantilla del horario</h6>
+                <p class="small text-muted">Usa la plantilla para conservar las columnas esperadas por el sistema.</p>
+                <button type="button" class="btn btn-outline-success btn-sm w-100 mb-3" id="btnPlantillaHorario"><i class="fa-solid fa-download me-1"></i>Descargar plantilla</button>
+                <button type="button" class="btn btn-link btn-sm p-0" id="btnMostrarColumnasHorario">Ver columnas esperadas</button>
+                <div id="columnasPlantillaHorario" class="small mt-2 d-none"></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-8">
+            <label class="form-label fw-semibold">Archivo Excel</label>
+            <input type="file" id="archivoHorario" class="form-control" accept=".xlsx,.xls,.csv">
+            <div id="estadoImportacionHorario" class="small text-muted mt-2"></div>
+            <div class="d-flex align-items-center justify-content-between mt-3">
+              <span class="fw-semibold">Vista previa</span>
+              <span class="badge text-bg-light" id="contadorPreviewHorario">0 filas</span>
+            </div>
+            <div id="previewHorarioPrincipal" class="preview-import mt-2 border rounded p-2">
+              <div class="empty-preview"><i class="fa-solid fa-table-list"></i><span>Seleccione un archivo para ver la vista previa.</span></div>
+            </div>
+            <div class="small text-muted mt-2">Filas detectadas: <strong id="resumenFilasHorario">0</strong></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-outline-success" id="btnVistaPreviaHorario"><i class="fa-solid fa-eye me-1"></i>Generar vista previa</button>
+        <button type="button" class="btn btn-success d-none" id="btnSubirHorario"><i class="fa-solid fa-check me-2"></i>Confirmar importación</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =====================================================
+     MODAL AGREGAR / EDITAR HORARIO
+===================================================== -->
+<div class="modal fade" id="modalHorarioManual" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="tituloModalHorario">Agregar horario</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="horarioEditId">
+                <div id="horarioModoAviso" class="alert alert-info">Cargando modo de horario...</div>
+                <div id="contenedorHorariosManuales"></div>
+                <button type="button" class="btn btn-outline-success btn-sm mt-2" id="btnAgregarFilaHorario"><i class="fa-solid fa-plus"></i> Agregar otro día</button>
+                <div class="row g-3 mt-1">
+                    <div class="col-md-6"><label class="form-label">Trimestre de la ficha</label><input id="horarioTrimestre" type="number" min="1" class="form-control" value="1" readonly></div>
+                    <div class="col-md-6"><label class="form-label">Año</label><input id="horarioAnio" type="number" min="2000" class="form-control" value="2026" readonly></div>
+                </div>
+                <div class="alert alert-secondary mt-3 mb-0">El trimestre y el año se calculan automáticamente con las fechas de inicio y fin de la ficha. Los datos de competencia e instructor se buscan en la base de datos al hacer clic o escribir.</div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn btn-success" id="btnGuardarHorarioManual"><i class="fa-solid fa-save"></i> Guardar horario</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- =====================================================
+     BOOTSTRAP
+===================================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js">
+</script>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script>
+
+const token = localStorage.getItem("token");
+
+const idFicha = localStorage.getItem("id_ficha");
+
+const rol = localStorage.getItem("rol");
+
+const nombreUsuario = localStorage.getItem("nombre");
+
+let instructoresFicha = [];
+
+
+/* =====================================================
+   VERIFICAR SESIÓN
+===================================================== */
+
+if (!token) {
+
+    window.location.href = "/";
+
+}
+
+
+/* =====================================================
+   VERIFICAR FICHA
+===================================================== */
+
+if (!idFicha) {
+
+    alert("No se ha seleccionado ninguna ficha.");
+
+    window.location.href = "/";
+
+}
+
+
+/* =====================================================
+   SESIÓN EXPIRADA (token vencido / 401)
+===================================================== */
+
+function sesionExpirada() {
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("id_usuario");
+    localStorage.removeItem("nombre");
+    localStorage.removeItem("rol");
+    localStorage.removeItem("id_ficha");
+
+    alert("Tu sesión ha expirado. Por favor inicia sesión nuevamente.");
+
+    window.location.href = "/";
+
+}
+
+
+/* =====================================================
+   MOSTRAR USUARIO
+===================================================== */
+
+document.getElementById("nombreUsuario").textContent =
+    nombreUsuario || "Usuario";
+
+
+/* =====================================================
+   CARGAR INFORMACIÓN DE LA FICHA
+===================================================== */
+
+async function cargarFicha() {
+
+    try {
+
+        const respuesta = await fetch(
+            `/ficha/${idFicha}`,
+            {
+
+                method: "GET",
+
+                headers: {
+
+                    "Authorization": `Bearer ${token}`
+
+                }
+
+            }
+        );
+
+
+        if (respuesta.status === 401) {
+
+            sesionExpirada();
+            return;
+
+        }
+
+        if (!respuesta.ok) {
+
+            const error = await respuesta.json();
+
+            alert(error.mensaje || "No se pudo cargar la ficha.");
+
+            return;
+
+        }
+
+
+        const ficha = await respuesta.json();
+
+        // Una ficha vencida queda visible, pero el Instructor no puede cargar
+        // plan/horario/actividades. Si el Administrador la activa manualmente,
+        // vuelve a ser operativa aunque sus fechas ya hayan pasado.
+        if (rol === "Instructor" && ficha.estado !== "Activa") {
+            alert(`No puedes realizar cargas en esta ficha. La ficha está ${ficha.estado.toLowerCase()}.`);
+        } else if (rol === "Instructor") {
+            const hoy = new Date(); hoy.setHours(0,0,0,0);
+            const fin = convertirFecha(ficha.fecha_fin);
+            const inicio = convertirFecha(ficha.fecha_inicio);
+            if ((inicio && hoy < inicio) || (fin && hoy > fin)) {
+                alert(`No puedes realizar cargas porque las fechas de la ficha no están vigentes. La ficha va del ${ficha.fecha_inicio} al ${ficha.fecha_fin}.`);
+            }
+        }
+
+        document.getElementById("numeroFicha").textContent =
+            ficha.numero_ficha;
+
+
+        document.getElementById("nombrePrograma").textContent =
+            ficha.nombre_programa || "Sin programa asignado";
+
+
+        document.getElementById("fechaInicio").textContent =
+            ficha.fecha_inicio;
+
+
+        document.getElementById("fechaFin").textContent =
+            ficha.fecha_fin;
+
+
+        document.getElementById("duracion").textContent =
+            calcularDuracion(
+                ficha.fecha_inicio,
+                ficha.fecha_fin
+            );
+
+
+        document.getElementById("tiempoTranscurrido").textContent =
+            calcularTiempoTranscurrido(
+                ficha.fecha_inicio,
+                ficha.fecha_fin
+            );
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Error al cargar la ficha.");
+
+    }
+
+}
+
+
+/* =====================================================
+   CALCULAR DURACIÓN
+===================================================== */
+
+function calcularDuracion(inicio, fin) {
+
+    const fechaInicio = convertirFecha(inicio);
+
+    const fechaFin = convertirFecha(fin);
+
+    let meses =
+        (fechaFin.getFullYear() - fechaInicio.getFullYear()) * 12;
+
+    meses +=
+        fechaFin.getMonth() - fechaInicio.getMonth();
+
+    return `${meses} meses`;
+
+}
+
+
+/* =====================================================
+   TIEMPO TRANSCURRIDO
+===================================================== */
+
+let porcentajeEsperadoGlobal = 0;
+let porcentajeRealGlobal = 0;
+
+function actualizarDiferencia() {
+    const el = document.getElementById("diferencia");
+    if (!el) return;
+    const diff = porcentajeRealGlobal - porcentajeEsperadoGlobal;
+    el.textContent = (diff > 0 ? "+" : "") + diff + "%";
+    el.classList.remove("text-danger", "text-success", "text-warning");
+    // Va atrasado respecto al tiempo transcurrido: rojo.
+    // Va igual o adelantado: verde.
+    el.classList.add(diff < 0 ? "text-danger" : "text-success");
+}
+
+function calcularTiempoTranscurrido(inicio, fin) {
+    const fechaInicio = convertirFecha(inicio);
+    const fechaFin = convertirFecha(fin);
+    const hoy = new Date();
+    hoy.setHours(0,0,0,0);
+
+    const totalDias = Math.max(1, Math.round((fechaFin - fechaInicio) / 86400000));
+    const transcurridos = Math.max(0, Math.min(totalDias, Math.round((hoy - fechaInicio) / 86400000)));
+    const porcentaje = Math.round((transcurridos / totalDias) * 100);
+
+    // Actualiza la tarjeta de avance de tiempo usando días reales,
+    // no solo meses calendario.
+    const esperado = document.getElementById("avanceEsperado");
+    const barra = document.getElementById("barraEsperado");
+    if (esperado) esperado.textContent = porcentaje + "%";
+    if (barra) barra.style.width = porcentaje + "%";
+
+    porcentajeEsperadoGlobal = porcentaje;
+    actualizarDiferencia();
+
+    const meses = Math.floor(transcurridos / 30.44);
+    const dias = Math.round(transcurridos - (meses * 30.44));
+    return `${meses} meses y ${Math.max(0,dias)} días (${porcentaje}%)`;
+}
+
+/* =====================================================
+   CONVERTIR FECHA
+===================================================== */
+
+function convertirFecha(fecha) {
+
+    const partes = fecha.split("/");
+
+    return new Date(
+        partes[2],
+        partes[1] - 1,
+        partes[0]
+    );
+
+}
+
+
+/* =====================================================
+   CARGAR ACTIVIDADES
+===================================================== */
+
+/* =====================================================
+   CARGAR INSTRUCTORES ASIGNABLES DE LA FICHA
+===================================================== */
+
+async function cargarInstructoresFicha() {
+
+    try {
+
+        const respuesta = await fetch(
+            `/actividades/instructores/${idFicha}`,
+            {
+                method: "GET",
+
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            }
+        );
+
+        if (respuesta.status === 401) {
+
+            sesionExpirada();
+            return;
+
+        }
+
+        if (!respuesta.ok) {
+
+            instructoresFicha = [];
+
+            return;
+        }
+
+        instructoresFicha = await respuesta.json();
+
+    } catch (error) {
+
+        console.error(
+            "ERROR CARGANDO INSTRUCTORES:",
+            error
+        );
+
+        instructoresFicha = [];
+    }
+}
+
+
+/* =====================================================
+   CARGAR ACTIVIDADES
+===================================================== */
+
+let actividadesCache = [];
+let faseActualIndex = 0;
+let planBusqueda = "";
+
+function normalizarPlan(v) {
+    return String(v ?? "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+
+function actividadesFiltradas() {
+    if (!planBusqueda) return actividadesCache;
+    return actividadesCache.filter(a => {
+        const texto = [a.fase,a.actividad_proyecto,a.competencia,a.resultado,a.actividad_aprendizaje,a.instructor,a.juicio_evaluacion,a.trimestre,a.orden,a.horas_directas,a.horas_independientes].join(" ");
+        return normalizarPlan(texto).includes(normalizarPlan(planBusqueda));
+    });
+}
+
+function renderNavegacionFases(lista) {
+    const nav=document.getElementById("navegacionFases");
+    if(!nav)return;
+    if(planBusqueda){
+        nav.innerHTML=`<span class="badge text-bg-light border">${lista.length} resultado(s) encontrados</span>`;
+        return;
+    }
+    const fases=[...new Set(actividadesCache.map(a=>a.fase || "Sin fase"))];
+    if(!fases.length){nav.innerHTML="";return;}
+    faseActualIndex=Math.min(faseActualIndex,fases.length-1);
+    nav.innerHTML=fases.map((f,i)=>`<button class="btn btn-sm ${i===faseActualIndex?'btn-success':'btn-outline-success'}" onclick="irAFase(${i})">${escHorario(f)}</button>`).join("")+
+        `<span class="fase-info">Fase ${faseActualIndex+1} de ${fases.length}</span>`;
+}
+
+function irAFase(i){ faseActualIndex=i; renderPlanActual(); }
+
+function renderPlanActual(){
+    const tabla=document.getElementById("tablaActividades");
+    let lista=actividadesFiltradas();
+    if(!planBusqueda){
+        const fases=[...new Set(actividadesCache.map(a=>a.fase || "Sin fase"))];
+        const fase=fases[faseActualIndex] || "Sin fase";
+        lista=lista.filter(a=>(a.fase || "Sin fase")===fase);
+    }
+    renderNavegacionFases(lista);
+    tabla.innerHTML="";
+    if(!lista.length){
+        tabla.innerHTML=`<tr><td colspan="10" class="text-center py-4">${planBusqueda?"No se encontraron coincidencias en el plan.":"Esta fase no tiene actividades."}</td></tr>`;
+        return;
+    }
+    const datalist=document.getElementById("listaInstructoresPlan");
+    if(datalist) datalist.innerHTML=instructoresFicha.map(i=>`<option value="${escHorario(i.nombre)}"></option>`).join("");
+    lista.forEach((actividad,index)=>{
+        const fila=document.createElement("tr");
+        fila.dataset.planId=actividad.id;
+        fila.innerHTML=`
+            <td>${index+1}</td>
+            <td>${escHorario(actividad.fase)}</td>
+            <td>${escHorario(actividad.actividad_proyecto)}</td>
+            <td>${escHorario(actividad.competencia)}</td>
+            <td>${escHorario(actividad.resultado)}</td>
+            <td>${escHorario(actividad.actividad_aprendizaje)}</td>
+            <td class="text-center">${actividad.horas_directas||0}</td>
+            <td class="text-center">${actividad.horas_independientes||0}</td>
+            <td><input list="listaInstructoresPlan" class="form-control form-control-sm plan-instructor-input" value="${escHorario(actividad.instructor||"")}" placeholder="Escribe para buscar" onchange="asignarInstructorPorNombre(${actividad.id},this.value)"></td>
+            <td><select class="form-select form-select-sm juicio-evaluacion-select" data-id-plan="${actividad.id}" aria-label="Juicio de evaluación">${["APROBADO","PENDIENTE","EN EJECUCIÓN","SIN CALIFICAR"].map(e=>`<option value="${e}" ${(actividad.juicio_evaluacion || "SIN CALIFICAR")===e?'selected':''}>${e}</option>`).join("")}</select></td>
+`;
+        tabla.appendChild(fila);
+    });
+}
+
+async function cargarActividades() {
+    const tabla=document.getElementById("tablaActividades");
+    try{
+        await cargarInstructoresFicha();
+        tabla.innerHTML=`<tr><td colspan="10" class="text-center">Cargando plan de formación...</td></tr>`;
+        const respuesta=await fetch(`/actividades/${idFicha}`,{headers:{"Authorization":`Bearer ${token}`}});
+        if(respuesta.status===401){sesionExpirada();return;}
+        const data=await respuesta.json();
+        if(!respuesta.ok){alert(data.mensaje||"No se pudo cargar el plan.");return;}
+        actividadesCache=data.actividades||[]; faseActualIndex=0; renderPlanActual(); actualizarEstadisticas(actividadesCache);
+    }catch(error){console.error("ERROR CARGANDO PLAN:",error);tabla.innerHTML=`<tr><td colspan="10" class="text-center text-danger">Error al cargar el plan de formación.</td></tr>`;}
+}
+
+async function asignarInstructorPorNombre(id,nombre){
+    const buscado=normalizarPlan(nombre); const inst=instructoresFicha.find(i=>normalizarPlan(i.nombre)===buscado);
+    if(!inst && buscado){alert("Selecciona un instructor existente de la lista.");await renderPlanActual();return;}
+    await asignarInstructor(id,inst?inst.id:null);
+}
+
+async function cambiarJuicioEvaluacion(id, juicio){
+    try{
+        const respuesta=await fetch(`/actividades/${id}/juicio-evaluacion`,{method:"PUT",headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},body:JSON.stringify({juicio_evaluacion:juicio})});
+        const data=await respuesta.json().catch(()=>({}));
+        if(respuesta.status===401){sesionExpirada();return;}
+        if(!respuesta.ok){alert(data.mensaje||"No se pudo actualizar el juicio de evaluación.");cargarActividades();return;}
+        const actividad=actividadesCache.find(a=>Number(a.id)===Number(id));
+        if(actividad) actividad.juicio_evaluacion=data.juicio_evaluacion||juicio;
+        actualizarEstadisticas(actividadesCache);
+    }catch(error){console.error(error);alert("No se pudo actualizar el juicio de evaluación.");cargarActividades();}
+}
+
+document.addEventListener("change", event=>{
+    const select=event.target.closest(".juicio-evaluacion-select");
+    if(select) cambiarJuicioEvaluacion(Number(select.dataset.idPlan),select.value);
+});
+
+/* =====================================================
+   ESTADÍSTICAS
+===================================================== */
+
+function actualizarEstadisticas(actividades) {
+ const total=actividades.length; const conJuicio=actividades.filter(a=>a.juicio_evaluacion==="APROBADO").length; const sinJuicio=total-conJuicio;
+ document.getElementById("totalActividades").textContent=total; document.getElementById("actividadesFinalizadas").textContent=conJuicio; document.getElementById("actividadesProceso").textContent=0; document.getElementById("actividadesPendientes").textContent=sinJuicio;
+ const avance=total?Math.round(conJuicio/total*100):0; if(document.getElementById("avanceReal"))document.getElementById("avanceReal").textContent=avance+"%"; if(document.getElementById("barraReal"))document.getElementById("barraReal").style.width=avance+"%"; porcentajeRealGlobal=avance; actualizarDiferencia();
+}
+
+document.getElementById("busquedaPlan")?.addEventListener("input",e=>{planBusqueda=e.target.value.trim();faseActualIndex=0;renderPlanActual();});
+
+/* =====================================================
+   ASIGNAR INSTRUCTOR
+===================================================== */
+
+async function asignarInstructor(id, idUsuario) {
+
+    try {
+
+        const respuesta = await fetch(
+            `/actividades/${id}/instructor`,
+            {
+
+                method: "PUT",
+
+                headers: {
+
+                    "Content-Type": "application/json",
+
+                    "Authorization": `Bearer ${token}`
+
+                },
+
+                body: JSON.stringify({
+                    id_instructor: idUsuario || null
+                })
+
+            }
+        );
+
+        if (respuesta.status === 401) {
+
+            sesionExpirada();
+            return;
+
+        }
+
+        const data = await respuesta.json();
+
+        if (!respuesta.ok) {
+
+            alert(
+                data.mensaje ||
+                "No se pudo asignar el instructor."
+            );
+
+            cargarActividades();
+
+            return;
+        }
+
+        cargarActividades();
+
+    } catch (error) {
+
+        console.error(error);
+    }
+}
+
+
+/* =====================================================
+   IMPORTAR EXCEL
+===================================================== */
+
+// Bootstrap puede no cargar si el CDN está bloqueado. No permitimos que eso detenga
+// todo el JavaScript de la página y deje los datos en "Cargando...".
+function crearModalSeguro(elemento) {
+    if (!elemento) {
+        console.error("No se encontró el elemento del modal.");
+        return { show(){}, hide(){} };
+    }
+    if (window.bootstrap && window.bootstrap.Modal) {
+        // Reutiliza la instancia de Bootstrap si ya existe. Esto evita
+        // configuraciones internas incompletas y el error de backdrop.
+        return window.bootstrap.Modal.getOrCreateInstance(elemento);
+    }
+    return {
+        show() {
+            elemento.classList.add("show");
+            elemento.style.display = "block";
+            elemento.removeAttribute("aria-hidden");
+            document.body.classList.add("modal-open");
+        },
+        hide() {
+            elemento.classList.remove("show");
+            elemento.style.display = "none";
+            elemento.setAttribute("aria-hidden", "true");
+            document.body.classList.remove("modal-open");
+        }
+    };
+}
+
+const modalImportar = crearModalSeguro(document.getElementById("modalImportar"));
+let archivoExcelPrincipal=null;
+const columnasPlanPrincipal=[["FASE DE PROYECTO","Fase del proyecto: ANÁLISIS, PLANEACIÓN, EJECUCIÓN o EVALUACIÓN."],["ACTIVIDAD DE PROYECTO","Actividad de proyecto asociada."],["COMPETENCIA","Nombre de la competencia."],["RESULTADOS DE APRENDIZAJE","Resultado de aprendizaje."],["ACTIVIDADES DE APRENDIZAJE","Actividad de aprendizaje."],["HORAS TRABAJO DIRECTO","Horas de trabajo directo."],["HORAS TRABAJO INDEPENDIENTE","Horas de trabajo independiente."],["INSTRUCTOR","Instructor responsable, opcional."],["TRIMESTRE","Trimestre del plan, opcional."],["JUICIO DE EVALUACIÓN","APROBADO, PENDIENTE, EN EJECUCIÓN o SIN CALIFICAR."]];
+const columnasHorarioPrincipal=[["DÍA","Día de la semana: LUNES a DOMINGO."],["HORA INICIO","Hora de inicio en formato HH:MM."],["HORA FIN","Hora de finalización en formato HH:MM."],["COMPETENCIA","Competencia asociada."],["AMBIENTE","Ambiente o aula, opcional."],["INSTRUCTOR","Instructor responsable, opcional."]];
+function escImport(v){return String(v??"").replace(/[&<>\"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'\"':"&quot;","'":"&#39;"}[c]));}
+function mostrarColumnasImport(id,cols){const e=document.getElementById(id);if(e)e.innerHTML='<ul class="mb-0 ps-3">'+cols.map(c=>`<li><strong>${escImport(c[0])}</strong>: ${escImport(c[1])}</li>`).join('')+'</ul>';}
+function fichaNumeroImport(){const n=document.querySelector('[data-numero-ficha]')?.textContent?.trim()||document.getElementById('numeroFicha')?.textContent?.trim();return n||`Ficha ${idFicha}`;}
+async function descargarPlantillaImport(url,nombre){try{const r=await fetch(url,{headers:{Authorization:`Bearer ${token}`}});if(r.status===401){sesionExpirada();return;}if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.mensaje||'No se pudo descargar la plantilla.');}const blob=await r.blob(),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=nombre;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}catch(e){alert(e.message||'No se pudo descargar la plantilla.');}}
+function renderPreviewImport(rows,boxId,countId,sumId){const box=document.getElementById(boxId);rows=rows||[];document.getElementById(countId).textContent=`${rows.length} filas`;document.getElementById(sumId).textContent=rows.length;if(!rows.length){box.innerHTML='<div class="empty-preview"><i class="fa-solid fa-table-list"></i><span>No se encontraron filas para mostrar.</span></div>';return;}const cols=[...new Set(rows.flatMap(r=>Object.keys(r)))];box.innerHTML=`<table class="table table-sm table-bordered align-middle mb-0"><thead><tr>${cols.map(c=>`<th>${escImport(c)}</th>`).join('')}</tr></thead><tbody>${rows.slice(0,30).map(r=>`<tr>${cols.map(c=>`<td>${escImport(r[c])}</td>`).join('')}</tr>`).join('')}</tbody></table>${rows.length>30?`<div class="preview-more">Mostrando las primeras 30 de ${rows.length} filas.</div>`:''}`;}
+async function prepararPreviewImport(inputId,boxId,countId,sumId,statusId,confirmId){const input=document.getElementById(inputId),status=document.getElementById(statusId);if(!input?.files?.length){alert('Seleccione un archivo Excel.');return;}try{status.textContent='Leyendo archivo...';const wb=XLSX.read(await input.files[0].arrayBuffer(),{type:'array'}),ws=wb.Sheets[wb.SheetNames[0]],rows=XLSX.utils.sheet_to_json(ws,{defval:''});renderPreviewImport(rows,boxId,countId,sumId);status.textContent=rows.length?'Vista previa lista. Revise y confirme la importación.':'El archivo no contiene datos.';document.getElementById(confirmId).classList.toggle('d-none',!rows.length);}catch(e){console.error(e);status.textContent='No se pudo leer el archivo.';alert(e.message||'No se pudo leer el Excel.');}}
+function setText(id,value){const e=document.getElementById(id);if(e)e.textContent=value;}
+function resetImportPrincipal(){const input=document.getElementById('archivoExcel');if(input)input.value='';document.getElementById('btnSubirExcel')?.classList.add('d-none');setText('estadoImportacionPrincipal','');setText('contadorPreviewExcel','0 filas');setText('resumenFilasExcel','0');const box=document.getElementById('previewExcelPrincipal');if(box)box.innerHTML='<div class="empty-preview"><i class="fa-solid fa-table-list"></i><span>Seleccione un archivo para ver la vista previa.</span></div>';setText('importFichaModal',fichaNumeroImport());mostrarColumnasImport('columnasPlantillaPrincipal',columnasPlanPrincipal);}
+document.getElementById('btnImportar')?.addEventListener('click',()=>{resetImportPrincipal();modalImportar.show();});
+document.getElementById('btnPlantillaPrincipal')?.addEventListener('click',e=>{e.preventDefault();descargarPlantillaImport('/plantillas/plan-formacion','plantilla_plan_formacion.xlsx');});
+document.getElementById('btnMostrarColumnasPrincipal')?.addEventListener('click',()=>document.getElementById('columnasPlantillaPrincipal')?.classList.toggle('d-none'));
+document.getElementById('btnMostrarColumnasHorario')?.addEventListener('click',()=>document.getElementById('columnasPlantillaHorario')?.classList.toggle('d-none'));
+document.getElementById('btnVistaPreviaExcel')?.addEventListener('click',()=>prepararPreviewImport('archivoExcel','previewExcelPrincipal','contadorPreviewExcel','resumenFilasExcel','estadoImportacionPrincipal','btnSubirExcel'));
+document.getElementById('archivoExcel')?.addEventListener('change',e=>{document.getElementById('estadoImportacionPrincipal').textContent=e.target.files?.[0]?`Archivo seleccionado: ${e.target.files[0].name}`:'';document.getElementById('btnSubirExcel').classList.add('d-none');});
+document.getElementById('btnSubirExcel')?.addEventListener('click',async()=>{const archivo=document.getElementById('archivoExcel').files[0];if(!archivo){alert('Seleccione un archivo Excel.');return;}const fd=new FormData();fd.append('archivo',archivo);fd.append('id_ficha',idFicha);const b=document.getElementById('btnSubirExcel');b.disabled=true;b.innerHTML='<i class="fa-solid fa-spinner fa-spin me-2"></i>Importando...';try{const r=await fetch('/importar_excel',{method:'POST',headers:{Authorization:`Bearer ${token}`},body:fd});if(r.status===401){sesionExpirada();return;}const d=await r.json();if(!r.ok){alert(d.mensaje||'Error al importar Excel.');return;}alert(d.mensaje||'Excel importado correctamente.');modalImportar.hide();await actualizarEstadoExcel();cargarActividades();}catch(e){console.error(e);alert('Error al conectar con el servidor.');}finally{b.disabled=false;b.innerHTML='<i class="fa-solid fa-check me-2"></i>Confirmar importación';}});
+const modalImportarHorario=crearModalSeguro(document.getElementById('modalImportarHorario'));
+function resetImportHorario(){const input=document.getElementById('archivoHorario');if(input)input.value='';document.getElementById('btnSubirHorario')?.classList.add('d-none');setText('estadoImportacionHorario','');setText('contadorPreviewHorario','0 filas');setText('resumenFilasHorario','0');const box=document.getElementById('previewHorarioPrincipal');if(box)box.innerHTML='<div class="empty-preview"><i class="fa-solid fa-table-list"></i><span>Seleccione un archivo para ver la vista previa.</span></div>';setText('importFichaHorarioModal',fichaNumeroImport());mostrarColumnasImport('columnasPlantillaHorario',columnasHorarioPrincipal);}
+document.getElementById('btnPlantillaHorario')?.addEventListener('click',e=>{e.preventDefault();descargarPlantillaImport('/plantillas/horario','plantilla_horario.xlsx');});
+document.getElementById('btnVistaPreviaHorario')?.addEventListener('click',()=>prepararPreviewImport('archivoHorario','previewHorarioPrincipal','contadorPreviewHorario','resumenFilasHorario','estadoImportacionHorario','btnSubirHorario'));
+document.getElementById('archivoHorario')?.addEventListener('change',e=>{document.getElementById('estadoImportacionHorario').textContent=e.target.files?.[0]?`Archivo seleccionado: ${e.target.files[0].name}`:'';document.getElementById('btnSubirHorario').classList.add('d-none');});
+/* =====================================================
+   BOTÓN VOLVER
+===================================================== */
+
+document.getElementById("btnVolver")
+    .addEventListener("click", () => {
+
+        window.location.href = "/panel_instructor";
+
+    });
+
+
+/* =====================================================
+   CERRAR SESIÓN
+===================================================== */
+
+document.getElementById("btnSalir")
+    .addEventListener("click", () => {
+
+        localStorage.removeItem("token");
+        localStorage.removeItem("id_usuario");
+        localStorage.removeItem("nombre");
+        localStorage.removeItem("rol");
+        localStorage.removeItem("id_ficha");
+
+        window.location.href = "/";
+
+    });
+
+
+/* =====================================================
+   AUTOCOMPLETADO DE DATOS EXISTENTES
+===================================================== */
+function escAutoPrincipal(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));}
+function configurarAutoPrincipal({inputId,listId,tipo,hiddenId=null,getExtra=()=>""}){
+    const input=document.getElementById(inputId), list=document.getElementById(listId);
+    if(!input||!list)return;
+    let timer;
+    const cerrar=()=>list.classList.add("d-none");
+    const buscar=()=>{
+        clearTimeout(timer);
+        const q=input.value.trim();
+        timer=setTimeout(async()=>{
+            try{
+                const r=await fetch(`/catalogos/busqueda?tipo=${encodeURIComponent(tipo)}&q=${encodeURIComponent(q)}&id_ficha=${encodeURIComponent(idFicha)}${getExtra()}`,{headers:{Authorization:`Bearer ${token}`}});
+                const data=await r.json();
+                if(!r.ok){cerrar();return;}
+                list.innerHTML=data.length?data.map(x=>`<div class="autocomplete-item" data-id="${escAutoPrincipal(x.id)}" data-text="${escAutoPrincipal(x.texto)}"><strong>${escAutoPrincipal(x.texto)}</strong>${x.correo?`<small class="d-block text-muted">${escAutoPrincipal(x.correo)}</small>`:""}${x.categoria?`<small class="d-block text-muted">${escAutoPrincipal(x.categoria)}</small>`:""}</div>`).join(""):"<div class='autocomplete-empty'>No hay coincidencias.</div>";
+                list.classList.remove("d-none");
+                list.querySelectorAll(".autocomplete-item").forEach(el=>el.addEventListener("mousedown",ev=>{ev.preventDefault();input.value=el.dataset.text;if(hiddenId)document.getElementById(hiddenId).value=el.dataset.id;cerrar();}));
+            }catch(e){console.error(e);}
+        },180);
+    };
+    input.addEventListener("input",()=>{if(hiddenId)document.getElementById(hiddenId).value="";buscar();});
+    input.addEventListener("focus",buscar);
+    input.addEventListener("blur",()=>setTimeout(cerrar,180));
+}
+
+function actualizarTrimestreManual(){
+    fetch(`/ficha/${idFicha}`,{headers:{"Authorization":`Bearer ${token}`}}).then(r=>r.json()).then(f=>{
+        const campo=document.getElementById("manualTrimestre");
+        if(campo) campo.value=f.trimestre||1;
+    }).catch(()=>{});
+}
+
+/* =====================================================
+   AGREGAR ACTIVIDAD MANUAL
+===================================================== */
+const modalAgregarActividad = crearModalSeguro(document.getElementById("modalAgregarActividad"));
+
+document.getElementById("btnAgregar").addEventListener("click", async () => {
+    document.getElementById("manualInstructor").value = "";
+    document.getElementById("manualInstructorId").value = "";
+    document.getElementById("manualFaseId").value = "";
+    document.getElementById("manualActividadProyectoId").value = "";
+    document.getElementById("manualCompetenciaId").value = "";
+    if(document.getElementById("manualResultadoId")) document.getElementById("manualResultadoId").value = "";
+    if(document.getElementById("manualActividadAprendizajeId")) document.getElementById("manualActividadAprendizajeId").value = "";
+    actualizarTrimestreManual();
+    modalAgregarActividad.show();
+});
+
+document.getElementById("btnGuardarActividadManual").addEventListener("click", async () => {
+    const payload = {
+        id_ficha: idFicha,
+        fase_proyecto: document.getElementById("manualFase").value,
+        id_fase: document.getElementById("manualFaseId")?.value || null,
+        actividad_proyecto: document.getElementById("manualActividadProyecto").value,
+        id_actividad_proyecto: document.getElementById("manualActividadProyectoId")?.value || null,
+        competencia: document.getElementById("manualCompetencia").value,
+        resultado_aprendizaje: document.getElementById("manualResultado").value,
+        id_resultado: document.getElementById("manualResultadoId")?.value || null,
+        actividad_aprendizaje: document.getElementById("manualActividadAprendizaje").value,
+        id_actividad_aprendizaje: document.getElementById("manualActividadAprendizajeId")?.value || null,
+        trimestre: document.getElementById("manualTrimestre").value,
+        horas_directas: document.getElementById("manualHorasDirectas").value,
+        horas_independientes: document.getElementById("manualHorasIndependientes").value,
+        id_instructor: document.getElementById("manualInstructorId").value
+    };
+    if (!payload.competencia.trim() || !payload.resultado_aprendizaje.trim()) { alert("Competencia y resultado de aprendizaje son obligatorios."); return; }
+    const boton = document.getElementById("btnGuardarActividadManual");
+    boton.disabled = true;
+    try {
+        const respuesta = await fetch("/actividades/manual", { method: "POST", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }, body: JSON.stringify(payload) });
+        const data = await respuesta.json();
+        if (respuesta.status === 401) { sesionExpirada(); return; }
+        if (!respuesta.ok) { alert(data.mensaje || "No se pudo agregar la actividad."); return; }
+        alert(data.mensaje);
+        modalAgregarActividad.hide();
+        document.querySelectorAll("#modalAgregarActividad input, #modalAgregarActividad textarea").forEach(el => el.value = "");
+        actualizarTrimestreManual();
+        document.getElementById("manualHorasDirectas").value = 0;
+        document.getElementById("manualHorasIndependientes").value = 0;
+        await cargarActividades();
+        await actualizarEstadoExcel();
+    } catch (error) { console.error(error); alert("Error al conectar con el servidor."); }
+    finally { boton.disabled = false; }
+});
+
+/* =====================================================
+   ESTADO Y BORRADO DEL EXCEL IMPORTADO
+===================================================== */
+async function actualizarEstadoExcel() {
+    const boton = document.getElementById("btnImportar");
+    const borrar = document.getElementById("btnBorrarExcel");
+    const juicios = document.getElementById("btnJuiciosEvaluativosPrincipal");
+    const buscador = document.getElementById("contenedorBusquedaPlan");
+    if (!boton) return;
+    try {
+        const r = await fetch(`/importar_excel/${idFicha}`, { headers: { "Authorization": `Bearer ${token}` } });
+        if (!r.ok) return;
+        const data = await r.json();
+        const tienePlan = !!data.tiene_plan;
+        const importado = !!data.importado;
+
+        // Sin plan: solamente Importar Excel y Agregar actividad.
+        // Con plan manual: aparecen búsqueda, borrar, juicios e importar.
+        // Con Excel importado: se oculta Importar hasta borrar el plan.
+        if (buscador) buscador.style.display = tienePlan ? "block" : "none";
+        if (borrar) borrar.style.display = tienePlan ? "inline-block" : "none";
+        if (juicios) juicios.style.display = tienePlan ? "inline-block" : "none";
+        boton.style.display = importado ? "none" : "inline-block";
+        boton.disabled = false;
+    } catch (e) { console.error(e); }
+}
+
+document.getElementById("btnBorrarExcel").addEventListener("click", async () => {
+    if (!confirm("¿Seguro que deseas borrar el plan de formación? Se eliminarán TODOS los registros de la ficha, incluidos los agregados manualmente.")) return;
+    try {
+        const r = await fetch(`/importar_excel/${idFicha}`, { method: "DELETE", headers: { "Authorization": `Bearer ${token}` } });
+        const data = await r.json();
+        if (r.status === 401) { sesionExpirada(); return; }
+        if (!r.ok) { alert(data.mensaje || "No se pudo borrar el plan."); return; }
+        alert(data.mensaje);
+        await cargarActividades();
+        await actualizarEstadoExcel();
+    } catch (e) { console.error(e); alert("Error al conectar con el servidor."); }
+});
+
+actualizarEstadoExcel();
+
+const inputJuiciosPrincipal = document.getElementById("archivoJuiciosEvaluativosPrincipal");
+document.getElementById("btnJuiciosEvaluativosPrincipal")?.addEventListener("click",()=>{
+    if(!idFicha){alert("No hay una ficha seleccionada.");return;}
+    inputJuiciosPrincipal?.click();
+});
+inputJuiciosPrincipal?.addEventListener("change",async()=>{
+    const archivo=inputJuiciosPrincipal.files?.[0];
+    if(!archivo)return;
+    const fd=new FormData(); fd.append("archivo",archivo);
+    const boton=document.getElementById("btnJuiciosEvaluativosPrincipal");
+    boton.disabled=true;
+    try{
+        const r=await fetch(`/auxiliar/fichas/${idFicha}/juicios-evaluativos`,{method:"POST",headers:{"Authorization":`Bearer ${token}`},body:fd});
+        const data=await r.json().catch(()=>({}));
+        if(r.status===401){sesionExpirada();return;}
+        if(!r.ok){alert(data.mensaje||"No se pudo procesar el Excel de juicios evaluativos.");return;}
+        alert(`Juicios procesados. Coincidencias: ${data.coincidencias||0}. Registros actualizados: ${data.actualizados||0}.`);
+        await cargarActividades();
+    }catch(e){console.error(e);alert("Error al conectar con el servidor.");}
+    finally{boton.disabled=false;inputJuiciosPrincipal.value="";}
+});
+
+
+/* =====================================================
+   HORARIO DE LA FICHA
+===================================================== */
+
+const modalHorarioManual = crearModalSeguro(document.getElementById("modalHorarioManual"));
+
+function escHorario(value) { return String(value ?? "").replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c])); }
+
+function filaHorarioHtml(h={}, idx=0){
+    const dias=["LUNES","MARTES","MIÉRCOLES","JUEVES","VIERNES","SÁBADO"];
+    const id=`horarioFila_${idx}`;
+    return `<div class="card border mb-2 horario-manual-fila" data-index="${idx}">
+      <div class="card-body p-3">
+        <div class="d-flex justify-content-between align-items-center mb-2"><strong>Día ${idx+1}</strong>${idx>0?`<button type="button" class="btn btn-sm btn-outline-danger btn-quitar-fila">Quitar</button>`:""}</div>
+        <div class="row g-2">
+          <div class="col-md-2"><label class="form-label">Día *</label><select class="form-select horario-dia">${dias.map(d=>`<option value="${d}" ${String(h.dia||"LUNES")===d?'selected':''}>${d}</option>`).join("")}</select></div>
+          <div class="col-md-2"><label class="form-label">Inicio *</label><input class="form-control horario-hora-inicio" type="time" value="${escHorario(h.hora_inicio||"")}"></div>
+          <div class="col-md-2"><label class="form-label">Fin *</label><input class="form-control horario-hora-fin" type="time" value="${escHorario(h.hora_fin||"")}"></div>
+          <div class="col-md-4"><label class="form-label">Competencia *</label><div class="autocomplete-wrap"><input class="form-control horario-competencia" autocomplete="off" value="${escHorario(h.competencia||"")}" placeholder="Haga clic o escriba"><div class="autocomplete-list d-none horario-comp-list"></div></div></div><div class="col-md-6"><label class="form-label">Resultado de aprendizaje *</label><div class="autocomplete-wrap"><textarea class="form-control horario-resultado" rows="2" autocomplete="off" placeholder="Haga clic o escriba el resultado">${escHorario(h.resultado||"")}</textarea><div class="autocomplete-list d-none horario-res-list"></div></div></div>
+          <div class="col-md-2"><label class="form-label">Ambiente</label><input class="form-control horario-ambiente" value="${escHorario(h.ambiente||"")}"></div>
+          <div class="col-md-6"><label class="form-label">Instructor</label><div class="autocomplete-wrap"><input class="form-control horario-instructor" autocomplete="off" value="${escHorario(h.instructor||"")}" placeholder="Haga clic o escriba"><div class="autocomplete-list d-none horario-inst-list"></div></div></div>
+        </div>
+      </div></div>`;
+}
+
+function prepararAutocompletadoFila(fila){
+    const comp=fila.querySelector('.horario-competencia'), compList=fila.querySelector('.horario-comp-list');
+    const inst=fila.querySelector('.horario-instructor'), instList=fila.querySelector('.horario-inst-list');
+    const setup=(input,list,tipo)=>{
+      if(!input||!list||input.dataset.ready)return; input.dataset.ready='1'; let timer;
+      const close=()=>list.classList.add('d-none');
+      const search=()=>{ clearTimeout(timer); const q=input.value.trim(); timer=setTimeout(async()=>{ try{
+        const r=await fetch(`/catalogos/busqueda?tipo=${tipo}&q=${encodeURIComponent(q)}&id_ficha=${encodeURIComponent(idFicha)}`,{headers:{Authorization:`Bearer ${token}`}}); const data=await r.json(); if(!r.ok){close();return;}
+        list.innerHTML=data.length?data.map(x=>`<div class="autocomplete-item" data-text="${escHorario(x.texto)}"><strong>${escHorario(x.texto)}</strong></div>`).join(''):'<div class="autocomplete-empty">No hay coincidencias.</div>';
+        list.classList.remove('d-none'); list.querySelectorAll('.autocomplete-item').forEach(el=>el.addEventListener('mousedown',ev=>{ev.preventDefault();input.value=el.dataset.text;close();}));
+      }catch(e){console.error(e);}},150); };
+      input.addEventListener('input',search); input.addEventListener('focus',search); input.addEventListener('blur',()=>setTimeout(close,180));
+    };
+    setup(comp,compList,'competencias'); setup(inst,instList,'instructores');
+}
+
+function actualizarBotonesHorario(tieneHorario){
+    const importar=document.getElementById('btnImportarHorario'), exportar=document.getElementById('btnExportarHorario'), borrar=document.getElementById('btnEliminarTodosHorario'), agregar=document.getElementById('btnAgregarHorario');
+    if(importar) importar.style.display=tieneHorario?'none':'inline-block';
+    if(exportar) exportar.style.display=tieneHorario?'inline-block':'none';
+    if(borrar) borrar.style.display=tieneHorario?'inline-block':'none';
+    if(agregar){agregar.style.display='inline-block'; agregar.innerHTML=tieneHorario?'<i class="fa-solid fa-plus"></i> Agregar horario por día':'<i class="fa-solid fa-calendar-week"></i> Agregar horario semanal';}
+}
+
+async function abrirModalHorario(h = null) {
+    const estado=await fetch(`/horarios/${idFicha}`,{headers:{Authorization:`Bearer ${token}`}}).then(r=>r.json()).catch(()=>({horarios:[]}));
+    const tiene=Array.isArray(estado.horarios)&&estado.horarios.length>0;
+    document.getElementById('horarioEditId').value=h?h.id:'';
+    document.getElementById('horarioTrimestre').value=estado.trimestre_actual||1;
+    document.getElementById('horarioAnio').value=estado.anio_actual||new Date().getFullYear();
+    document.getElementById('tituloModalHorario').textContent=h?'Editar horario':(tiene?'Agregar horario por día':'Agregar horario semanal');
+    document.getElementById('horarioModoAviso').textContent=tiene?'La ficha ya tiene horario. Puedes agregar registros manuales por día sin borrar el horario importado.':'No hay horario. Puedes registrar toda la semana y agregar los días que necesites.';
+    const cont=document.getElementById('contenedorHorariosManuales'); cont.innerHTML='';
+    cont.insertAdjacentHTML('beforeend',filaHorarioHtml(h||{},0));
+    const fila=cont.firstElementChild; prepararAutocompletadoFila(fila);
+    fila.querySelector('.btn-quitar-fila')?.addEventListener('click',()=>fila.remove());
+    document.getElementById('btnAgregarFilaHorario').style.display=tiene||h?'none':'inline-block';
+    modalHorarioManual.show();
+}
+
+document.getElementById('btnAgregarFilaHorario')?.addEventListener('click',()=>{
+    const cont=document.getElementById('contenedorHorariosManuales'); const idx=cont.querySelectorAll('.horario-manual-fila').length;
+    cont.insertAdjacentHTML('beforeend',filaHorarioHtml({},idx)); const fila=cont.lastElementChild; prepararAutocompletadoFila(fila); fila.querySelector('.btn-quitar-fila')?.addEventListener('click',()=>fila.remove());
+});
+
+async function cargarHorario() {
+    const tabla=document.getElementById('tablaHorario');
+    try{
+        const estado=await fetch(`/horarios/${idFicha}/estado-trimestre`,{headers:{Authorization:`Bearer ${token}`}}); const estadoData=await estado.json().catch(()=>({}));
+        const badge=document.getElementById('trimestreActualHorario'); if(badge&&estadoData.trimestre_actual)badge.textContent=`T${estadoData.trimestre_actual} — ${estadoData.anio_actual}`;
+        const alerta=document.getElementById('alertaTrimestreHorario'); if(alerta){alerta.classList.toggle('d-none',!estadoData.cambio_requerido);}
+        const respuesta=await fetch(`/horarios/${idFicha}`,{headers:{Authorization:`Bearer ${token}`}}); if(respuesta.status===401){sesionExpirada();return;} const data=await respuesta.json();
+        if(!respuesta.ok){tabla.innerHTML=`<tr><td colspan="9" class="text-center">${escHorario(data.mensaje||'No se pudo cargar el horario.')}</td></tr>`;actualizarBotonesHorario(false);return;}
+        actualizarBotonesHorario((data.horarios||[]).length>0); document.getElementById('horarioTrimestre').value=data.trimestre_actual||1; document.getElementById('horarioAnio').value=data.anio_actual||new Date().getFullYear();
+        tabla.innerHTML=''; const hs=data.horarios||[];
+        if(!hs.length)tabla.innerHTML=`<tr><td colspan="9" class="text-center py-4">No hay horario cargado para el trimestre T${escHorario(data.trimestre_actual||1)} — ${escHorario(data.anio_actual||'')}.</td></tr>`;
+        hs.forEach(h=>{const fila=document.createElement('tr'); fila.innerHTML=`<td>${escHorario(h.dia)}</td><td>${escHorario(h.hora_inicio)}</td><td>${escHorario(h.hora_fin)}</td><td>${escHorario(h.competencia)}</td><td>${escHorario(h.resultado||"")}</td><td>${escHorario(h.ambiente)}</td><td>${escHorario(h.instructor||'Sin asignar')}</td><td class="text-center"><span class="badge text-bg-success">T${escHorario(h.trimestre||1)}</span></td><td class="text-center text-nowrap"><button class="btn btn-sm btn-outline-primary me-1 btn-editar-horario"><i class="fa-solid fa-pen"></i></button><button class="btn btn-sm btn-outline-danger btn-eliminar-horario"><i class="fa-solid fa-trash"></i></button></td>`; fila.querySelector('.btn-editar-horario').addEventListener('click',()=>abrirModalHorario(h)); fila.querySelector('.btn-eliminar-horario').addEventListener('click',()=>eliminarHorario(h.id)); tabla.appendChild(fila);});
+    }catch(e){console.error('ERROR CARGANDO HORARIO:',e);actualizarBotonesHorario(false);tabla.innerHTML='<tr><td colspan="9" class="text-center text-danger">Error al conectar con el servidor.</td></tr>';}
+}
+
+async function descargarHistorialHorario(idHistorial){
+    try{
+        const r=await fetch(`/horarios/historial/${idHistorial}/descargar`,{headers:{"Authorization":`Bearer ${token}`} });
+        if(r.status===401){sesionExpirada();return;}
+        if(!r.ok){const d=await r.json().catch(()=>({}));alert(d.mensaje||'No se pudo descargar el horario histórico.');return;}
+        const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`horario_historico_${idHistorial}.xlsx`;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+    }catch(e){console.error(e);alert('Error al descargar el horario histórico.');}
+}
+
+async function cargarHistorialHorarios(abrir=false){
+    const cont=document.getElementById("listaHistorialHorario");
+    if(cont)cont.innerHTML='<div class="text-center text-muted py-3">Cargando historial...</div>';
+    try{
+        const r=await fetch(`/horarios/${idFicha}/historial`,{headers:{"Authorization":`Bearer ${token}`} });
+        const data=await r.json().catch(()=>[]);
+        if(r.status===401){sesionExpirada();return;}
+        if(!r.ok){if(cont)cont.innerHTML=`<div class="alert alert-warning mb-0">${escHorario(data.mensaje||"No se pudo cargar el historial.")}</div>`;return;}
+        if(!Array.isArray(data)||!data.length){if(cont)cont.innerHTML='<div class="text-center text-muted py-4"><i class="fa-solid fa-clock-rotate-left fa-2x mb-2"></i><div>Aún no hay horarios guardados en el historial.</div></div>';}
+        else if(cont)cont.innerHTML=data.map(x=>`<div class="border rounded p-3 mb-2 d-flex justify-content-between align-items-center gap-3"><div><strong>Trimestre T${escHorario(x.trimestre)} — ${escHorario(x.anio)}</strong><div class="small text-muted">Guardado: ${escHorario(x.fecha)}</div><div class="small">${escHorario(x.nombre_archivo)}</div></div><button type="button" class="btn btn-sm btn-outline-primary btn-descargar-historial" data-historial-id="${Number(x.id)||0}"><i class="fa-solid fa-download me-1"></i>Descargar</button></div>`).join("");
+        cont?.querySelectorAll('.btn-descargar-historial').forEach(b=>b.addEventListener('click',()=>descargarHistorialHorario(Number(b.dataset.historialId))));
+        if(abrir)modalHistorialHorario.show();
+    }catch(e){console.error(e);if(cont)cont.innerHTML='<div class="alert alert-danger mb-0">Error al conectar con el servidor.</div>';}
+}
+
+const modalHistorialHorario = crearModalSeguro(document.getElementById("modalHistorialHorario"));
+document.getElementById("btnHistorialHorario").addEventListener("click",()=>cargarHistorialHorarios(true));
+
+async function eliminarHorario(idHorario) {
+    if (!confirm("¿Seguro que deseas eliminar este horario?")) return;
+    try {
+        const respuesta = await fetch(`/horarios/${idHorario}`, {
+            method: "DELETE",
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        const data = await respuesta.json().catch(() => ({}));
+        if (respuesta.status === 401) { sesionExpirada(); return; }
+        if (!respuesta.ok) { alert(data.mensaje || "No se pudo eliminar el horario."); return; }
+        alert(data.mensaje || "Horario eliminado correctamente.");
+        await cargarHorario();
+        await cargarActividades();
+    } catch (e) {
+        console.error(e);
+        alert("Error al conectar con el servidor.");
+    }
+}
+
+document.getElementById("btnEliminarTodosHorario").addEventListener("click", async () => {
+    if (!confirm("Esto eliminará TODO el horario de esta ficha. El Plan de Formación y los instructores NO se eliminarán. ¿Continuar?")) return;
+    const guardar = confirm("¿Deseas guardar una copia de este horario en el botón Historial antes de eliminarlo?\n\nAceptar = Sí, guardar historial\nCancelar = No, eliminar sin guardar");
+    try {
+        const respuesta = await fetch(`/horarios/${idFicha}/todos`, {
+            method: "DELETE",
+            headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+            body: JSON.stringify({guardar_historial: guardar})
+        });
+        const data = await respuesta.json().catch(() => ({}));
+        if (respuesta.status === 401) { sesionExpirada(); return; }
+        if (!respuesta.ok) { alert(data.mensaje || "No se pudo eliminar el horario."); return; }
+        alert(data.mensaje || "Horario eliminado.");
+        await cargarHorario();
+    } catch (e) {
+        console.error(e);
+        alert("Error al conectar con el servidor.");
+    }
+});
+
+document.getElementById("btnImportarHorario").addEventListener("click", async () => {
+    try{
+        const r=await fetch(`/horarios/${idFicha}`,{headers:{"Authorization":`Bearer ${token}`}});
+        const data=await r.json().catch(()=>({}));
+        if(r.status===401){sesionExpirada();return;}
+        if(!r.ok){alert(data.mensaje||"No se pudo comprobar el horario.");return;}
+        if((data.horarios||[]).length>0){
+            alert("Esta ficha ya tiene un horario cargado. Debes eliminar primero el horario actual y después cargar el nuevo.");
+            return;
+        }
+        document.getElementById("archivoHorario").value = "";
+        modalImportarHorario.show();
+    }catch(e){console.error(e);alert("Error al conectar con el servidor.");}
+});
+
+document.getElementById("btnSubirHorario").addEventListener("click", async () => {
+    const archivo = document.getElementById("archivoHorario").files[0];
+    if (!archivo) { alert("Seleccione un Excel de horario."); return; }
+    const formulario = new FormData();
+    formulario.append("archivo", archivo);
+    formulario.append("id_ficha", idFicha);
+    const boton = document.getElementById("btnSubirHorario");
+    boton.disabled = true;
+    boton.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Importando...`;
+    try {
+        const respuesta = await fetch("/importar_horario", { method: "POST", headers: { "Authorization": `Bearer ${token}` }, body: formulario });
+        if (respuesta.status === 401) { sesionExpirada(); return; }
+        const resultado = await respuesta.json();
+        if (!respuesta.ok) { alert(resultado.mensaje || "Error al importar el horario."); return; }
+        let mensaje = `${resultado.mensaje}\n\nHorarios cargados: ${resultado.horarios_cargados || 0}`;
+        if (resultado.actividades_actualizadas !== undefined) mensaje += `\nActividades del plan actualizadas: ${resultado.actividades_actualizadas || 0}`;
+        if (resultado.instructores_creados?.length) {
+            mensaje += `\n\nInstructores creados automáticamente:\n- ${resultado.instructores_creados.map(x => x.nombre).join("\n- ")}`;
+        }
+        alert(mensaje);
+        modalImportarHorario.hide();
+        await cargarHorario();
+        await cargarActividades();
+    } catch (error) {
+        console.error("ERROR IMPORTANDO HORARIO:", error);
+        alert("Error al conectar con el servidor.");
+    } finally {
+        boton.disabled = false;
+        boton.innerHTML = `<i class="fa-solid fa-upload"></i> Importar horario`;
+    }
+});
+
+document.getElementById("btnExportarHorario").addEventListener("click", async () => {
+    const boton = document.getElementById("btnExportarHorario");
+    boton.disabled = true;
+    try {
+        const respuesta = await fetch(`/horarios/${idFicha}/exportar`, { headers: { "Authorization": `Bearer ${token}` } });
+        if (respuesta.status === 401) { sesionExpirada(); return; }
+        if (!respuesta.ok) {
+            const data = await respuesta.json().catch(() => ({}));
+            alert(data.mensaje || "No se pudo exportar el horario.");
+            return;
+        }
+        const blob = await respuesta.blob();
+        const url = URL.createObjectURL(blob);
+        const enlace = document.createElement("a");
+        enlace.href = url;
+        enlace.download = `horario_ficha_${idFicha}.xlsx`;
+        document.body.appendChild(enlace);
+        enlace.click();
+        enlace.remove();
+        URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error("ERROR EXPORTANDO HORARIO:", error);
+        alert("Error al conectar con el servidor.");
+    } finally { boton.disabled = false; }
+});
+
+document.getElementById("btnAgregarHorario").addEventListener("click", () => abrirModalHorario());
+
+document.getElementById("btnGuardarHorarioManual").addEventListener("click", async () => {
+    const editId=document.getElementById('horarioEditId').value;
+    const filas=[...document.querySelectorAll('#contenedorHorariosManuales .horario-manual-fila')];
+    if(!filas.length){alert('Agrega al menos un día.');return;}
+    const datos=filas.map(f=>({dia:f.querySelector('.horario-dia').value,hora_inicio:f.querySelector('.horario-hora-inicio').value,hora_fin:f.querySelector('.horario-hora-fin').value,competencia:f.querySelector('.horario-competencia').value.trim(),resultado_aprendizaje:f.querySelector('.horario-resultado')?.value.trim()||"",ambiente:f.querySelector('.horario-ambiente').value.trim(),instructor:f.querySelector('.horario-instructor').value.trim()}));
+    for(const d of datos){if(!d.hora_inicio||!d.hora_fin||!d.competencia||!d.resultado_aprendizaje){alert('Cada registro debe tener día, horas, competencia y resultado de aprendizaje.');return;}}
+    const boton=document.getElementById('btnGuardarHorarioManual'); boton.disabled=true;
+    try{
+      if(editId){
+        const r=await fetch(`/horarios/${editId}`,{method:'PUT',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify(datos[0])}); const data=await r.json().catch(()=>({})); if(!r.ok){alert(data.mensaje||'No se pudo editar el horario.');return;}
+      }else{
+        for(const d of datos){
+          const r=await fetch(`/horarios/${idFicha}`,{method:'POST',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify(d)}); const data=await r.json().catch(()=>({})); if(!r.ok){alert(data.mensaje||'No se pudo guardar el horario.');return;}
+        }
+      }
+      alert('Horario guardado correctamente.'); modalHorarioManual.hide(); await cargarHorario(); await cargarActividades();
+    }catch(e){console.error(e);alert('Error al conectar con el servidor.');}finally{boton.disabled=false;}
+});
+
+// Fin de la gestión de notas en esta página. Las notas se gestionan desde el panel del instructor.
+
+
+
+configurarAutoPrincipal({inputId:"manualFase",listId:"manualFaseSuggestions",tipo:"fases",hiddenId:"manualFaseId"});
+configurarAutoPrincipal({inputId:"manualActividadProyecto",listId:"manualActividadProyectoSuggestions",tipo:"actividades_proyecto",hiddenId:"manualActividadProyectoId"});
+configurarAutoPrincipal({inputId:"manualCompetencia",listId:"manualCompetenciaSuggestions",tipo:"competencias",hiddenId:"manualCompetenciaId"});
+configurarAutoPrincipal({inputId:"manualResultado",listId:"manualResultadoSuggestions",tipo:"resultados",hiddenId:"manualResultadoId",getExtra:()=>{const id=document.getElementById("manualCompetenciaId")?.value;return id?`&id_competencia=${id}`:"";}});
+configurarAutoPrincipal({inputId:"manualActividadAprendizaje",listId:"manualActividadSuggestions",tipo:"actividades",hiddenId:"manualActividadAprendizajeId"});
+configurarAutoPrincipal({inputId:"manualInstructor",listId:"manualInstructorSuggestions",tipo:"instructores",hiddenId:"manualInstructorId"});
+configurarAutoPrincipal({inputId:"horarioCompetencia",listId:"horarioCompetenciaSuggestions",tipo:"competencias"});
+configurarAutoPrincipal({inputId:"horarioInstructor",listId:"horarioInstructorSuggestions",tipo:"instructores"});
+
+cargarHorario();
+
+
+/* =====================================================
+   EDITAR ACTIVIDAD
+===================================================== */
+
+function editarActividad(id) {
+
+    alert(
+        "Editar actividad ID: " + id
+    );
+
+}
+
+
+/* =====================================================
+   INICIAR
+===================================================== */
+
+cargarFicha();
+
+cargarActividades();
+
+</script>
+
+</body>
+
+</html>

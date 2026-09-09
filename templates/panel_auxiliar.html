@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Auxiliar | Gestión SENA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <style>
+        :root{--sena:#39A900;--sena-dark:#2E7D32;--fondo:#f5f7fa}
+        body{background:var(--fondo);font-family:'Poppins',Arial,sans-serif}
+        .wrapper{min-height:100vh;display:block}
+        .contenido{max-width:1450px;margin:0 auto;padding:24px 32px 50px}
+        .topbar{background:#fff;border-radius:16px;padding:18px 24px;margin-bottom:24px;border-top:4px solid var(--sena);box-shadow:0 4px 18px rgba(0,0,0,.06)}
+        .brand{display:flex;align-items:center;gap:14px}.brand img{width:54px;height:54px;object-fit:contain}.brand h2{margin:0;color:var(--sena-dark);font-weight:700}.usuario-actual{font-weight:600;color:#374151}
+        .card-panel{border:0;border-radius:16px;box-shadow:0 3px 16px rgba(0,0,0,.06)}
+        .btn-sena{background:var(--sena);color:#fff;border:0}.btn-sena:hover{background:var(--sena-dark);color:#fff}
+        .btn-outline-sena{border:1px solid var(--sena);color:var(--sena)}.btn-outline-sena:hover{background:var(--sena);color:#fff}
+        .table td,.table th{vertical-align:middle}.table td{white-space:normal;word-break:break-word;max-width:none}.badge-ok{background:#dff7e8;color:#18743a}.badge-no{background:#ffe8e8;color:#a11}
+        /* Cada fila del plan cambia de color de forma independiente según su estado. */
+        #tablaPlan .plan-fila-calificado td{background:#dcfce7 !important}
+        #tablaPlan .plan-fila-ejecucion td{background:#dbeafe !important}
+        #tablaPlan .plan-fila-pendiente td{background:#fef3c7 !important}
+        #tablaPlan .plan-fila-sin-calificar td{background:#fee2e2 !important}
+        #tablaPlan .plan-fila-calificado td:first-child{border-left:4px solid #16a34a}
+        #tablaPlan .plan-fila-ejecucion td:first-child{border-left:4px solid #2563eb}
+        #tablaPlan .plan-fila-sin-calificar td:first-child{border-left:4px solid #dc2626}
+        #tablaPlan .plan-fila-pendiente td:first-child{border-left:4px solid #f59e0b}
+        .accion-card{cursor:pointer;transition:.15s;border:1px solid #e5e7eb}.accion-card:hover{transform:translateY(-2px);border-color:var(--sena)}.accion-card i{font-size:28px;color:var(--sena)}
+        .stat-num{font-size:2rem;font-weight:700;color:var(--sena-dark)}
+        #vistaExcel{max-height:560px;overflow:auto}.section-title{color:var(--sena-dark);font-weight:700}
+        .autocomplete-wrap{position:relative}.autocomplete-list{position:absolute;left:0;right:0;top:100%;z-index:1065;background:#fff;border:1px solid #d9dee5;border-radius:0 0 10px 10px;box-shadow:0 8px 20px rgba(0,0,0,.12);max-height:230px;overflow:auto}.autocomplete-item{padding:9px 12px;cursor:pointer}.autocomplete-item:hover{background:#eef8e9}.autocomplete-empty{padding:9px 12px;color:#6b7280}.toast-sena{position:fixed;right:24px;bottom:24px;z-index:1080;min-width:280px;background:var(--sena-dark);color:white;padding:14px 18px;border-radius:12px;box-shadow:0 6px 22px rgba(0,0,0,.18);display:none}
+        @media(max-width:700px){.contenido{padding:14px}.topbar{padding:15px}.brand h2{font-size:1.25rem}}
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <main class="contenido">
+        <header class="topbar d-flex justify-content-between align-items-center gap-3 flex-wrap">
+            <div class="brand">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="SENA">
+                <div><h2>Panel de Auxiliar</h2><small class="text-muted">Gestión de instructores, fichas y archivos importados</small></div>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <span class="usuario-actual"><i class="fa-solid fa-user me-1"></i><span id="nombreAuxiliar">Auxiliar</span></span>
+                <button class="btn btn-outline-danger btn-sm" id="btnSalir"><i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</button>
+            </div>
+        </header>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-3"><div class="card card-panel p-3 text-center"><div class="text-muted">Usuarios activos</div><div class="stat-num" id="totalUsuarios">0</div></div></div>
+            <div class="col-md-3"><div class="card card-panel p-3 text-center"><div class="text-muted">Instructores activos</div><div class="stat-num" id="totalInstructores">0</div></div></div>
+            <div class="col-md-3"><div class="card card-panel p-3 text-center"><div class="text-muted">Fichas</div><div class="stat-num" id="totalFichas">0</div></div></div>
+            <div class="col-md-3"><div class="card card-panel p-3 text-center"><div class="text-muted">Excel importados</div><div class="stat-num" id="totalExcel">0</div></div></div>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-3"><div class="card card-panel accion-card p-4 h-100" data-bs-toggle="modal" data-bs-target="#modalInstructor"><i class="fa-solid fa-user-plus mb-2"></i><h5>Crear instructor</h5><p class="text-muted mb-0">Guarda el nombre del instructor y su ficha, sin crear una cuenta de acceso.</p></div></div>
+            <div class="col-md-3"><div class="card card-panel accion-card p-4 h-100" data-bs-toggle="modal" data-bs-target="#modalPrograma"><i class="fa-solid fa-graduation-cap mb-2"></i><h5>Crear programa</h5><p class="text-muted mb-0">Registra un nuevo programa en la tabla de programas para poder asociarlo a fichas.</p></div></div>
+            <div class="col-md-3"><div class="card card-panel accion-card p-4 h-100" data-bs-toggle="modal" data-bs-target="#modalFicha"><i class="fa-solid fa-folder-plus mb-2"></i><h5>Agregar ficha</h5><p class="text-muted mb-0">Crea una ficha nueva y guárdala en la BD.</p></div></div>
+            <div class="col-md-3"><div class="card card-panel accion-card p-4 h-100" data-bs-toggle="modal" data-bs-target="#modalPlan"><i class="fa-solid fa-list-check mb-2"></i><h5>Crear plan de formación</h5><p class="text-muted mb-0">Agrega actividades y guárdalas en la base de datos.</p></div></div>
+            <div class="col-md-3"><div class="card card-panel accion-card p-4 h-100" onclick="document.getElementById('seccionPlan').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-file-excel mb-2"></i><h5>Exportar plan</h5><p class="text-muted mb-0">Descarga el plan guardado como Excel en tu computador.</p></div></div>
+        </div>
+
+        <section class="card card-panel p-4 mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3"><h4 class="section-title mb-0">Usuarios</h4><button class="btn btn-outline-sena btn-sm" onclick="cargarUsuarios()"><i class="fa-solid fa-rotate"></i> Actualizar</button></div>
+            <div class="table-responsive"><table class="table table-hover"><thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="tablaUsuarios"></tbody></table></div>
+        </section>
+
+        <section class="card card-panel p-4 mb-4" id="seccionInstructores">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2"><h4 class="section-title mb-0">Instructores del sistema</h4><button class="btn btn-outline-sena btn-sm" onclick="cargarInstructoresSistema()"><i class="fa-solid fa-rotate"></i> Actualizar</button></div>
+            <div class="table-responsive"><table class="table table-hover"><thead><tr><th>Instructor</th><th>Fichas asignadas</th><th>Cuenta de acceso</th></tr></thead><tbody id="tablaInstructoresSistema"><tr><td colspan="3" class="text-center text-muted">Cargando instructores...</td></tr></tbody></table></div>
+        </section>
+
+        <section class="card card-panel p-4 mb-4" id="seccionFichas">
+            <div class="d-flex justify-content-between align-items-center mb-3"><h4 class="section-title mb-0">Fichas</h4><button class="btn btn-outline-sena btn-sm" onclick="cargarFichas()"><i class="fa-solid fa-rotate"></i> Actualizar</button></div>
+            <div class="table-responsive"><table class="table table-hover"><thead><tr><th>Ficha</th><th>Programa</th><th>Excel</th><th>Fechas</th><th>Nuevo número</th><th></th></tr></thead><tbody id="tablaFichas"></tbody></table></div>
+        </section>
+
+        <section class="card card-panel p-4 mb-4" id="seccionPlan">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <h4 class="section-title mb-0">Plan de formación</h4>
+                <div class="d-flex gap-2 align-items-center flex-wrap">
+                    <select id="planFicha" class="form-select form-select-sm" style="min-width:220px" onchange="cargarPlan()"><option value="">Seleccione ficha</option></select>
+                    <input id="buscarPlan" class="form-control form-control-sm" style="min-width:280px" placeholder="Buscar fase, competencia, resultado, actividad, instructor, juicio de evaluación o trimestre..." oninput="filtrarPlan()">
+                    <button class="btn btn-outline-sena btn-sm" onclick="cargarPlan()"><i class="fa-solid fa-rotate"></i></button>
+                    <button class="btn btn-sena btn-sm" onclick="exportarPlan()"><i class="fa-solid fa-file-excel"></i> Exportar Excel</button>
+                    <input type="file" id="archivoPlanEvaluacion" accept=".xlsx,.xls" hidden>
+                    <button class="btn btn-outline-success btn-sm" type="button" onclick="seleccionarPlanEvaluacion()"><i class="fa-solid fa-file-import"></i> Importar plan de evaluación</button>
+                    <input type="file" id="archivoJuiciosEvaluativos" accept=".xlsx,.xls,.csv" hidden>
+                    <button class="btn btn-outline-primary btn-sm" type="button" onclick="seleccionarJuiciosEvaluativos()"><i class="fa-solid fa-file-import"></i> Juicios evaluativos</button>
+                </div>
+            </div>
+            <div id="planFaseNav" class="d-flex gap-2 flex-wrap mb-2"></div><div class="table-responsive"><table class="table table-hover table-sm"><thead><tr><th>Trim.</th><th>Orden</th><th>Fase</th><th>Competencia</th><th>Resultado de aprendizaje</th><th>Instructor</th><th>Horas directas</th><th>Horas independientes</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="tablaPlan"><tr><td colspan="10" class="text-center text-muted">Seleccione una ficha.</td></tr></tbody></table></div>
+        </section>
+
+        <section class="card card-panel p-4" id="seccionExcel">
+            <div class="d-flex justify-content-between align-items-center mb-3"><h4 class="section-title mb-0">Excel importado por ficha</h4><button class="btn btn-outline-sena btn-sm" onclick="cargarFichas()"><i class="fa-solid fa-rotate"></i> Actualizar</button></div>
+            <div class="table-responsive"><table class="table table-hover"><thead><tr><th>Ficha</th><th>Programa</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="tablaExcel"></tbody></table></div>
+        </section>
+    </main>
+</div>
+
+<div class="modal fade" id="modalFechasFicha" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title"><i class="fa-solid fa-calendar-days me-2"></i>Cambiar fechas de ficha</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="fechaFichaId"><div class="mb-3"><label class="form-label">Fecha de inicio</label><input type="date" id="editarFichaInicio" class="form-control"></div><div class="mb-3"><label class="form-label">Fecha de fin</label><input type="date" id="editarFichaFin" class="form-control"></div><div class="alert alert-info mb-0">Al guardar, el estado manual del administrador se limpia y se recalcula automáticamente según estas fechas.</div></div><div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button class="btn btn-sena" id="btnGuardarFechasFicha">Guardar fechas</button></div></div></div></div>
+<div class="toast-sena" id="mensajeGuardado"></div>
+
+<div class="modal fade" id="modalInstructor" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">Crear instructor</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <label class="form-label">Instructor existente sin ficha</label>
+        <select id="instExistente" class="form-select mb-2"><option value="">-- Crear uno nuevo --</option></select>
+        <div class="text-center text-muted small mb-2">o</div>
+        <label class="form-label">Nombre del instructor</label>
+        <input id="instNombre" class="form-control mb-2" placeholder="Nombre completo">
+
+        <label class="form-label">Fichas (puede seleccionar una o varias)</label>
+        <select id="instFicha" class="form-select" multiple size="6"></select>
+        <small class="text-muted">Mantenga Ctrl (Windows) o Cmd (Mac) para seleccionar varias fichas.</small>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button class="btn btn-sena" id="btnCrearInstructor">Guardar instructor</button></div>
+</div></div></div>
+
+<div class="modal fade" id="modalEditarUsuario" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">Editar usuario</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><input type="hidden" id="editUsuarioId"><input id="editNombre" class="form-control mb-2" placeholder="Nombre"><input id="editApellido" class="form-control mb-2" placeholder="Apellido"><input id="editCorreo" class="form-control mb-2" placeholder="Correo"><input id="editPassword" type="password" class="form-control" placeholder="Nueva contraseña (opcional)"></div>
+    <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button class="btn btn-sena" id="btnGuardarUsuario">Guardar cambios</button></div>
+</div></div></div>
+
+<div class="modal fade" id="modalPrograma" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">Crear programa</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="mb-3"><label class="form-label">Nombre del programa *</label><input id="programaNombre" class="form-control" maxlength="200" placeholder="Ej. Análisis y desarrollo de software"></div>
+        <div class="mb-3"><label class="form-label">Código del programa</label><input id="programaCodigo" class="form-control" maxlength="20" placeholder="Ej. 228118"></div>
+        <div class="row g-2">
+            <div class="col-md-6"><label class="form-label">Tipo de programa *</label><select id="programaTipo" class="form-select"><option value="">Seleccione</option><option value="Técnico">Técnico</option><option value="Tecnólogo">Tecnólogo</option></select></div>
+            <div class="col-md-6"><label class="form-label">Modalidad *</label><select id="programaModalidad" class="form-select"><option value="">Seleccione</option><option value="Presencial">Presencial</option><option value="Virtual">Virtual</option></select></div>
+        </div>
+        <div class="alert alert-light mt-3 mb-0"><i class="fa-solid fa-circle-info me-1"></i>El programa se guardará en <strong>programas</strong> y después aparecerá automáticamente al crear una ficha.</div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button class="btn btn-sena" id="btnCrearPrograma"><i class="fa-solid fa-floppy-disk"></i> Guardar programa</button></div>
+</div></div></div>
+
+<div class="modal fade" id="modalFicha" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">Agregar ficha</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-2">
+            <div class="col-md-5"><label class="form-label">Número de ficha *</label><input id="fichaNumero" class="form-control" placeholder="Ej. 2978456"></div>
+            <div class="col-md-7"><label class="form-label">Programa existente *</label><div class="autocomplete-wrap"><input id="fichaPrograma" class="form-control" autocomplete="off" placeholder="Haga clic para ver programas o escriba para buscar"><input type="hidden" id="fichaProgramaId"><div id="fichaProgramaSuggestions" class="autocomplete-list d-none"></div></div></div>
+            <div class="col-md-4"><label class="form-label">Código del programa</label><input id="fichaCodigoPrograma" class="form-control" readonly placeholder="Se completa al seleccionar el programa"></div>
+            <div class="col-md-4"><label class="form-label">Tipo de programa</label><input id="fichaTipoPrograma" class="form-control" readonly></div>
+            <div class="col-md-4"><label class="form-label">Modalidad</label><input id="fichaModalidad" class="form-control" readonly></div>
+            <div class="col-md-4"><label class="form-label">Fecha inicio *</label><input id="fichaInicio" type="date" class="form-control"></div>
+            <div class="col-md-4"><label class="form-label">Fecha fin *</label><input id="fichaFin" type="date" class="form-control"></div>
+            <div class="col-md-4"><label class="form-label">Trimestre actual</label><input id="fichaTrimestre" type="text" class="form-control fw-semibold" readonly placeholder="Se calcula al colocar las fechas"></div>
+            <div class="col-md-12"><small class="text-muted"><i class="fa-solid fa-circle-info me-1"></i>La ficha queda relacionada directamente con el programa seleccionado en la tabla <strong>programas</strong>. No se crea otro programa al guardar.</small></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button class="btn btn-sena" id="btnCrearFicha">Guardar ficha</button></div>
+</div></div></div>
+
+<div class="modal fade" id="modalPlan" tabindex="-1"><div class="modal-dialog modal-xl"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">Crear plan de formación</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-2">
+            <div class="col-md-4"><label class="form-label">Ficha *</label><select id="planNuevaFicha" class="form-select"><option value="">Seleccione ficha</option></select></div>
+            <div class="col-md-2"><label class="form-label">Trimestre de la ficha</label><input id="planTrimestre" type="text" class="form-control fw-semibold" readonly placeholder="Seleccione ficha"></div>
+            <div class="col-md-4"><label class="form-label">Instructor</label><div class="autocomplete-wrap"><input id="planInstructor" class="form-control" autocomplete="off" placeholder="Escribe para buscar instructor"><input type="hidden" id="planInstructorId"><div id="planInstructorSuggestions" class="autocomplete-list d-none"></div></div></div>
+            <div class="col-md-6"><label class="form-label">Fase de proyecto</label><div class="autocomplete-wrap"><input id="planFase" class="form-control" autocomplete="off" placeholder="Haga clic para ver fases o escriba para buscar"><input type="hidden" id="planFaseId"><div id="planFaseSuggestions" class="autocomplete-list d-none"></div></div></div>
+            <div class="col-md-6"><label class="form-label">Actividad de proyecto</label><div class="autocomplete-wrap"><input id="planActividadProyecto" class="form-control" autocomplete="off" placeholder="Haga clic para ver actividades o escriba para buscar"><input type="hidden" id="planActividadProyectoId"><div id="planActividadProyectoSuggestions" class="autocomplete-list d-none"></div></div></div>
+            <div class="col-md-6"><label class="form-label">Competencia *</label><div class="autocomplete-wrap"><textarea id="planCompetencia" class="form-control" rows="2" autocomplete="off" placeholder="Escribe para buscar en la base de datos"></textarea><input type="hidden" id="planCompetenciaId"><div id="planCompetenciaSuggestions" class="autocomplete-list d-none"></div></div></div>
+            <div class="col-md-6"><label class="form-label">Resultado de aprendizaje *</label><div class="autocomplete-wrap"><textarea id="planResultado" class="form-control" rows="2" autocomplete="off" placeholder="Escribe para buscar resultados existentes"></textarea><input type="hidden" id="planResultadoId"><div id="planResultadoSuggestions" class="autocomplete-list d-none"></div></div></div>
+            <div class="col-md-12"><label class="form-label">Actividades de aprendizaje</label><div class="autocomplete-wrap"><textarea id="planActividadAprendizaje" class="form-control" rows="2" autocomplete="off" placeholder="Haga clic para ver actividades o escriba para buscar"></textarea><input type="hidden" id="planActividadAprendizajeId"><div id="planActividadSuggestions" class="autocomplete-list d-none"></div></div></div>
+            <div class="col-md-3"><label class="form-label">Horas trabajo directo</label><input id="planHorasDirectas" type="number" min="0" value="0" class="form-control"></div>
+            <div class="col-md-3"><label class="form-label">Horas independientes</label><input id="planHorasIndependientes" type="number" min="0" value="0" class="form-control"></div>
+            <div class="col-md-3"><label class="form-label">Juicio de Evaluación</label><select id="planJuicioEvaluacion" class="form-select"><option value="SIN CALIFICAR">SIN CALIFICAR</option><option value="PENDIENTE">PENDIENTE</option><option value="EN EJECUCIÓN">EN EJECUCIÓN</option><option value="APROBADO">APROBADO</option></select></div>
+        </div>
+        <div class="alert alert-light mt-3 mb-0">Al guardar, el registro queda en la base de datos como <strong>manual</strong>. Después puedes descargar el plan completo de la ficha en Excel.</div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button class="btn btn-sena" id="btnCrearPlan"><i class="fa-solid fa-floppy-disk"></i> Guardar</button><button class="btn btn-success" id="btnCrearPlanDescargar"><i class="fa-solid fa-file-excel"></i> Guardar y descargar Excel</button></div>
+</div></div></div>
+
+<div class="modal fade" id="modalExcel" tabindex="-1"><div class="modal-dialog modal-xl"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title" id="tituloExcel">Excel importado</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><div id="vistaExcel" class="table-responsive"></div></div>
+    <div class="modal-footer"><a id="btnDescargarExcel" class="btn btn-sena" target="_blank"><i class="fa-solid fa-download"></i> Descargar Excel</a><button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button></div>
+</div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/panel_auxiliar.js') }}"></script>
+</body>
+</html>

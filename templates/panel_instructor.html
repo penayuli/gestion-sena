@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Panel Instructor | Gestión SENA</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- CSS del sistema -->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- CSS específico del panel -->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/panel_instructor.css') }}">
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     BARRA SUPERIOR
+========================================================= -->
+
+<header class="topbar">
+
+    <!-- LOGO -->
+    <div class="topbar-logo">
+
+        <img
+            src="{{ url_for('static', filename='img/logo.png') }}"
+            alt="SENA">
+
+    </div>
+
+
+    <!-- TÍTULO -->
+    <div class="topbar-title">
+
+        <span>
+            Panel del Instructor
+        </span>
+
+    </div>
+
+
+    <!-- USUARIO -->
+    <div class="topbar-user">
+
+
+        <div class="user-info">
+
+            <strong id="nombreInstructor">
+                Instructor
+            </strong>
+
+            <span>
+                Instructor SENA
+            </span>
+
+        </div>
+
+
+        <!--
+            EL CÍRCULO VERDE ES EL PERFIL.
+            NO HAY OTRO BOTÓN "MI PERFIL".
+        -->
+
+        <button
+            type="button"
+            class="avatar-perfil"
+            id="perfilAvatar"
+            data-bs-toggle="modal"
+            data-bs-target="#modalPerfil"
+            title="Mi perfil">
+
+            <i class="fa-solid fa-user"></i>
+
+        </button>
+
+
+        <!-- CERRAR SESIÓN -->
+
+        <button
+            type="button"
+            id="btnCerrarSesion"
+            class="btn-cerrar-sesion"
+            title="Cerrar sesión">
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- =========================================================
+     CONTENIDO PRINCIPAL
+========================================================= -->
+
+<main class="contenido-panel">
+
+
+    <!-- =====================================================
+         ENCABEZADO
+    ===================================================== -->
+
+    <section class="panel-heading">
+
+        <div>
+
+            <h1>
+                Mis fichas
+            </h1>
+
+            <p>
+                Consulta las fichas que tienes asignadas
+                y entra directamente a trabajar en ellas.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FICHAS
+    ===================================================== -->
+
+    <section class="instructor-dashboard">
+        <div class="dashboard-title-row">
+            <div><h2>Resumen de mi gestión</h2><p>Indicadores visuales de las fichas que tienes asignadas.</p></div>
+        </div>
+        <div class="metricas-instructor">
+            <article class="metric-card"><div class="metric-icon green"><i class="fa-solid fa-folder-open"></i></div><div><span>Fichas asignadas</span><strong id="grafTotalFichas">0</strong></div></article>
+            <article class="metric-card"><div class="metric-icon blue"><i class="fa-solid fa-play"></i></div><div><span>Fichas activas</span><strong id="grafFichasActivas">0</strong></div></article>
+            <article class="metric-card"><div class="metric-icon amber"><i class="fa-solid fa-flag-checkered"></i></div><div><span>Terminadas</span><strong id="grafFichasTerminadas">0</strong></div></article>
+            <article class="metric-card"><div class="metric-icon purple"><i class="fa-solid fa-chart-line"></i></div><div><span>Avance medio</span><strong id="grafAvanceMedio">0%</strong></div></article>
+        </div>
+        <div class="graficos-instructor">
+            <article class="grafico-card"><div class="grafico-head"><div><h3>Estado de mis fichas</h3><span>Distribución actual</span></div><i class="fa-solid fa-chart-pie"></i></div><div class="donut-instructor" id="donutInstructor"><div><strong id="donutTotalInstructor">0</strong><span>fichas</span></div></div><div class="leyenda-instructor"><span><i class="dot-green"></i>Activas <b id="leyActivas">0</b></span><span><i class="dot-blue"></i>Terminadas <b id="leyTerminadas">0</b></span></div></article>
+            <article class="grafico-card grafico-avance"><div class="grafico-head"><div><h3>Avance por ficha</h3><span>Según resultados aprobados</span></div><i class="fa-solid fa-bars-progress"></i></div><div id="barrasAvanceInstructor" class="barras-avance-instructor"><div class="grafico-vacio">Cargando datos...</div></div></article>
+        </div>
+    </section>
+
+    <section class="seccion-fichas">
+
+
+        <!-- CABECERA + BUSCADOR -->
+
+        <div class="fichas-toolbar">
+
+
+            <div class="fichas-titulo">
+
+                <h2>
+                    Fichas asignadas
+                </h2>
+
+                <span>
+                    Busca por número de ficha o programa.
+                </span>
+
+            </div>
+
+
+            <!-- BUSCADOR -->
+
+            <div class="buscador-fichas">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input
+                    type="text"
+                    id="buscarFichas"
+                    placeholder="Buscar ficha o programa..."
+                    autocomplete="off">
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             TABLA / LISTA DE FICHAS
+        ================================================== -->
+
+        <div class="fichas-container">
+
+
+            <!-- ENCABEZADOS -->
+
+            <div class="fichas-header">
+
+                <div>
+                    Ficha
+                </div>
+
+                <div>
+                    Programa de formación
+                </div>
+
+                <div>
+                    Acción
+                </div>
+
+            </div>
+
+
+            <!--
+                AQUÍ PANEL_INSTRUCTOR.JS CARGARÁ LAS FICHAS
+            -->
+
+            <ul
+                id="listaResumenFichas"
+                class="lista-fichas-asignadas">
+
+            </ul>
+
+
+            <!-- SIN RESULTADOS -->
+
+            <div
+                id="sinResultadosFichas"
+                class="sin-resultados"
+                style="display: none;">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <p>
+                    No se encontraron fichas.
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         NOVEDADES
+    ===================================================== -->
+
+    <section
+        id="seccionNotasInstructor"
+        class="notas-panel">
+
+
+        <!-- CABECERA -->
+
+        <div class="notas-header">
+
+
+            <div>
+
+                <h2>
+
+                    <i class="fa-solid fa-clipboard-list"></i>
+
+                    Novedades
+
+                </h2>
+
+                <p>
+                    Consulta y registra las novedades
+                    de tus fichas.
+                </p>
+
+            </div>
+
+
+            <span
+                id="estadoNotasPanel"
+                class="estado-notas">
+
+                Sin notas
+
+            </span>
+
+        </div>
+
+
+        <!-- CONTENIDO -->
+
+        <div class="notas-contenido">
+
+
+            <!-- FICHA -->
+
+            <div class="campo-ficha">
+
+                <label
+                    for="notasFichaPanel">
+
+                    Ficha
+
+                </label>
+
+
+                <select
+                    id="notasFichaPanel"
+                    class="form-select">
+
+                    <option value="">
+                        Seleccione una ficha
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- NOVEDAD -->
+
+            <div class="campo-novedad">
+
+                <label
+                    for="notasTextoPanel">
+
+                    Novedades
+
+                </label>
+
+
+                <textarea
+                    id="notasTextoPanel"
+                    class="form-control"
+                    rows="6"
+                    placeholder="Escriba aquí las novedades de esta ficha..."></textarea>
+
+            </div>
+
+        </div>
+
+
+        <!-- BOTÓN GUARDAR -->
+
+        <div class="notas-footer">
+
+            <button
+                type="button"
+                id="btnGuardarNotasPanel"
+                class="btn-guardar-notas">
+
+                <i class="fa-solid fa-floppy-disk"></i>
+
+                Guardar novedades
+
+            </button>
+
+        </div>
+
+
+        <!--
+            ESTE BOTÓN SE CONSERVA PARA EL JS EXISTENTE.
+            NO ES VISIBLE.
+        -->
+
+        <button
+            type="button"
+            id="btnNotas"
+            class="elemento-js">
+
+        </button>
+
+
+    </section>
+
+
+</main>
+
+
+<!-- =========================================================
+     MODAL MI PERFIL
+========================================================= -->
+
+<div
+    class="modal fade"
+    id="modalPerfil"
+    tabindex="-1"
+    aria-hidden="true">
+
+
+    <div class="modal-dialog modal-dialog-centered">
+
+
+        <div class="modal-content modal-perfil">
+
+
+            <!-- HEADER -->
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+
+                    <i class="fa-solid fa-user"></i>
+
+                    Mi perfil
+
+                </h5>
+
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Cerrar">
+
+                </button>
+
+            </div>
+
+
+            <!-- CUERPO -->
+
+            <div class="perfil-body">
+
+
+                <!-- FOTO -->
+
+                <div
+                    class="perfil-foto"
+                    id="fotoPerfilPreview">
+
+                    <i class="fa-solid fa-user"></i>
+
+                </div>
+
+
+                <!-- NOMBRE -->
+
+                <h3
+                    id="perfilNombre"
+                    class="perfil-nombre">
+
+                    Instructor
+
+                </h3>
+
+
+                <p class="perfil-rol">
+
+                    Instructor SENA
+
+                </p>
+
+
+                <!-- CAMBIAR FOTO -->
+
+                <label
+                    for="fotoPerfil"
+                    class="btn-cambiar-foto">
+
+                    <i class="fa-solid fa-camera"></i>
+
+                    Seleccionar foto
+
+
+                </label>
+
+
+                <input
+                    type="file"
+                    id="fotoPerfil"
+                    accept="image/png,image/jpeg,image/webp">
+
+
+                <!-- BOTONES DE CONFIRMACIÓN -->
+                
+                <div class="acciones-foto">
+                    <button
+                        type="button"
+                        id="btnAceptarFoto"
+                        class="btn-aceptar-foto"
+                        style="display: none;">
+
+                        <i class="fa-solid fa-check"></i>
+
+                         Aceptar
+
+                    </button>
+
+                    <button 
+                        type="button"
+                        id="btnCancelarFoto"
+                        class="btn-cancelar-foto"
+                        style="display: none;">
+
+                        <i class="fa-solid fa-xmark"></i>
+
+                        Cancelar
+                    
+                    </button>
+
+                    <button
+                        type="button"
+                        id="btnQuitarFoto"
+                        class="btn-quitar-foto">
+
+                         <i class="fa-solid fa-trash"></i>
+
+                         Quitar foto
+
+                    </button>
+                </div>
+
+                <p class="perfil-ayuda">
+                    Selecciona una foto y pulsa Aceptar para guardarla.
+                </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     SCRIPTS
+========================================================= -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js">
+</script>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js">
+</script>
+
+
+<script
+    src="{{ url_for('static', filename='js/panel_instructor.js') }}">
+</script>
+
+
+</body>
+
+</html>

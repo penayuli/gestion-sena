@@ -1,0 +1,474 @@
+/* =========================================================
+   PRINCIPAL.CSS
+   Rediseño visual — conserva las clases/IDs del HTML original
+   ========================================================= */
+
+:root{
+  --verde:#16a34a;
+  --verde-oscuro:#15803d;
+  --verde-suave:#ecfdf3;
+  --azul:#2563eb;
+  --azul-suave:#eff6ff;
+  --rojo:#dc2626;
+  --amarillo:#d97706;
+  --texto:#172033;
+  --muted:#6b7280;
+  --linea:#e5e7eb;
+  --fondo:#f5f7fa;
+  --blanco:#fff;
+  --sombra:0 8px 24px rgba(15,23,42,.07);
+  --radio:16px;
+}
+
+*{box-sizing:border-box}
+
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  background:var(--fondo);
+  color:var(--texto);
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+}
+
+/* ---------- CONTENEDOR PRINCIPAL ---------- */
+
+.contenido{
+  margin-left:0 !important;
+  padding:24px clamp(16px,3vw,40px);
+  width:100%;
+  min-height:100vh;
+}
+
+main,
+.container-fluid{
+  max-width:1500px;
+  margin:0 auto;
+}
+
+/* ---------- SIDEBAR: OCULTO EN PRINCIPAL ---------- */
+
+.sidebar{
+  display:none !important;
+}
+
+/* ---------- ENCABEZADO ---------- */
+
+.encabezado{
+  background:var(--blanco);
+  border:1px solid var(--linea);
+  border-radius:var(--radio);
+  min-height:72px;
+  padding:12px 18px;
+  margin-bottom:22px;
+  box-shadow:var(--sombra);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+
+.encabezado h1,
+.encabezado h2,
+.encabezado h3{
+  margin:0;
+  color:var(--texto);
+}
+
+.encabezado small,
+.encabezado .text-muted{
+  color:var(--muted)!important;
+}
+
+/* ---------- BARRA SUPERIOR ---------- */
+
+#nombreUsuario{
+  font-weight:700;
+  color:var(--texto);
+}
+
+#btnSalir{
+  border-radius:10px;
+}
+
+#btnNotificaciones{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+}
+
+/* ---------- TARJETAS GENERALES ---------- */
+
+.tarjeta,
+.card{
+  background:var(--blanco);
+  border:1px solid var(--linea);
+  border-radius:var(--radio);
+  box-shadow:var(--sombra);
+}
+
+.tarjeta{
+  padding:20px;
+}
+
+.card{
+  overflow:hidden;
+}
+
+.card-header{
+  background:var(--blanco);
+  border-bottom:1px solid var(--linea);
+  padding:16px 20px;
+  font-weight:700;
+}
+
+.card-body{
+  padding:20px;
+}
+
+/* ---------- CABECERA DE FICHA ---------- */
+
+#numeroFicha{
+  color:var(--verde-oscuro);
+  font-weight:800;
+  letter-spacing:-.02em;
+}
+
+#nombrePrograma{
+  color:var(--texto);
+  font-weight:700;
+}
+
+#modalidad,
+#jornada,
+#trimestre,
+#estado{
+  font-weight:600;
+}
+
+#btnVolver{
+  border-radius:10px;
+  font-weight:600;
+}
+
+/* ---------- INFORMACIÓN ---------- */
+
+.info-ficha,
+.ficha-info{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:14px;
+}
+
+.info-ficha > div,
+.ficha-info > div{
+  background:#fafbfc;
+  border:1px solid var(--linea);
+  border-radius:12px;
+  padding:14px;
+}
+
+#fechaInicio,
+#fechaFin,
+#duracion,
+#tiempoTranscurrido{
+  font-weight:700;
+  color:var(--texto);
+}
+
+/* ---------- PROGRESO ---------- */
+
+.progress{
+  height:10px;
+  background:#e9edf2;
+  border-radius:999px;
+  overflow:hidden;
+}
+
+.progress-bar{
+  border-radius:999px;
+}
+
+#barraEsperado{
+  background:var(--azul)!important;
+}
+
+#barraReal{
+  background:var(--verde)!important;
+}
+
+#avanceEsperado,
+#avanceReal,
+#diferencia{
+  font-weight:800;
+}
+
+/* ---------- BOTONES ---------- */
+
+.btn{
+  border-radius:10px;
+  font-weight:600;
+}
+
+.btn-success{
+  background:var(--verde);
+  border-color:var(--verde);
+}
+
+.btn-success:hover{
+  background:var(--verde-oscuro);
+  border-color:var(--verde-oscuro);
+}
+
+.btn-outline-success{
+  color:var(--verde-oscuro);
+  border-color:#86efac;
+}
+
+.btn-outline-success:hover{
+  background:var(--verde);
+  border-color:var(--verde);
+}
+
+.btn-primary{
+  background:var(--azul);
+  border-color:var(--azul);
+}
+
+/* ---------- PLAN FORMATIVO ---------- */
+
+#busquedaPlan{
+  min-height:44px;
+  border-radius:11px;
+  border:1px solid var(--linea);
+  box-shadow:none;
+}
+
+#busquedaPlan:focus{
+  border-color:#93c5fd;
+  box-shadow:0 0 0 3px rgba(37,99,235,.1);
+}
+
+#navegacionFases{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:16px;
+}
+
+#navegacionFases .btn{
+  border-radius:9px;
+}
+
+#tablaActividades,
+#tablaHorario{
+  margin-bottom:0;
+}
+
+.table{
+  --bs-table-bg:transparent;
+  vertical-align:middle;
+}
+
+.table thead th{
+  background:#f8fafc;
+  color:#475569;
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  font-weight:800;
+  border-bottom:1px solid var(--linea);
+  white-space:nowrap;
+}
+
+.table tbody td{
+  border-color:#edf0f3;
+  padding:13px 12px;
+}
+
+.table tbody tr:hover{
+  background:#fafdfb;
+}
+
+/* ---------- ESTADÍSTICAS DEL PLAN ---------- */
+
+#totalActividades,
+#actividadesFinalizadas,
+#actividadesProceso,
+#actividadesPendientes{
+  font-size:1.35rem;
+  font-weight:800;
+}
+
+/* ---------- HORARIO ---------- */
+
+#trimestreActualHorario{
+  font-weight:800;
+  border-radius:999px;
+}
+
+#alertaHorario,
+#alertaTrimestreHorario{
+  border-radius:12px;
+}
+
+#tablaHorario td:last-child{
+  white-space:nowrap;
+}
+
+/* ---------- MODALES ---------- */
+
+.modal-content{
+  border:0;
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 20px 60px rgba(15,23,42,.2);
+}
+
+.modal-header{
+  border-bottom:1px solid var(--linea);
+  padding:16px 20px;
+}
+
+.modal-header.bg-success{
+  background:linear-gradient(135deg,var(--verde),var(--verde-oscuro))!important;
+}
+
+.modal-title{
+  font-weight:800;
+}
+
+.modal-body{
+  padding:22px;
+}
+
+.modal-footer{
+  padding:15px 20px;
+  border-top:1px solid var(--linea);
+}
+
+/* ---------- CAMPOS ---------- */
+
+.form-control,
+.form-select{
+  min-height:42px;
+  border-color:#dbe1e8;
+  border-radius:10px;
+}
+
+.form-control:focus,
+.form-select:focus{
+  border-color:#86efac;
+  box-shadow:0 0 0 3px rgba(22,163,74,.1);
+}
+
+.form-label{
+  font-weight:700;
+  color:#374151;
+}
+
+/* ---------- IMPORTACIÓN ---------- */
+
+.preview-import{
+  min-height:130px;
+  max-height:360px;
+  overflow:auto;
+  background:#fafbfc;
+  border-color:var(--linea)!important;
+  border-radius:12px!important;
+}
+
+.empty-preview{
+  min-height:120px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:8px;
+  color:var(--muted);
+  text-align:center;
+}
+
+.empty-preview i{
+  font-size:28px;
+}
+
+#resultadoImportacion,
+#resultadoImportacionHorario{
+  border-radius:10px;
+}
+
+/* ---------- FILAS DE HORARIO MANUAL ---------- */
+
+.horario-manual-fila{
+  background:#f8fafc;
+  border:1px solid var(--linea);
+  border-radius:12px;
+  padding:14px;
+  margin-bottom:12px;
+}
+
+.horario-manual-fila:hover{
+  border-color:#bbf7d0;
+}
+
+.btn-quitar-fila{
+  border-radius:9px;
+}
+
+/* ---------- SUGERENCIAS ---------- */
+
+.autocomplete-suggestions,
+[id$="Suggestions"]{
+  position:relative;
+  z-index:1056;
+}
+
+/* ---------- BADGES ---------- */
+
+.badge{
+  font-weight:700;
+  border-radius:999px;
+  padding:.45em .7em;
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width:900px){
+  .contenido{
+    padding:16px;
+  }
+
+  .encabezado{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .table-responsive{
+    border-radius:12px;
+  }
+}
+
+@media (max-width:576px){
+  .contenido{
+    padding:10px;
+  }
+
+  .tarjeta,
+  .card{
+    border-radius:12px;
+  }
+
+  .card-body,
+  .tarjeta{
+    padding:14px;
+  }
+
+  .modal-body{
+    padding:15px;
+  }
+
+  .btn{
+    font-size:.9rem;
+  }
+}

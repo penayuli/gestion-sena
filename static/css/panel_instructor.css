@@ -1,0 +1,1476 @@
+/* =========================================================
+   PANEL INSTRUCTOR - SISTEMA GESTIÓN SENA
+========================================================= */
+
+:root {
+    --sena: #39A900;
+    --sena-dark: #2d8500;
+    --texto: #17243a;
+    --gris: #667085;
+    --gris-claro: #8a94a3;
+    --fondo: #f6f8fb;
+    --blanco: #ffffff;
+    --borde: #e3e8ef;
+    --borde-suave: #edf0f3;
+}
+
+
+/* =========================================================
+   GENERAL
+========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--fondo);
+    color: var(--texto);
+    font-family: 'Inter', Arial, sans-serif;
+}
+
+
+/* =========================================================
+   BARRA SUPERIOR
+========================================================= */
+
+.topbar {
+    width: 100%;
+    height: 72px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 35px;
+
+    background: var(--blanco);
+
+    border-top: 3px solid var(--sena);
+    border-bottom: 1px solid var(--borde);
+
+    box-shadow: 0 2px 12px rgba(0, 0, 0, .04);
+
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+
+/* LOGO */
+
+.topbar-logo {
+    display: flex;
+    align-items: center;
+}
+
+.topbar-logo img {
+    width: 92px;
+    height: auto;
+
+    object-fit: contain;
+}
+
+
+/* TÍTULO */
+
+.topbar-title {
+    margin-left: 30px;
+
+    color: var(--texto);
+
+    font-size: 17px;
+    font-weight: 700;
+}
+
+
+/* USUARIO */
+
+.topbar-user {
+    margin-left: auto;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+/* INFORMACIÓN DEL USUARIO */
+
+.user-info {
+    text-align: right;
+    line-height: 1.2;
+}
+
+.user-info strong {
+    display: block;
+
+    color: var(--texto);
+
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.user-info span {
+    display: block;
+
+    margin-top: 4px;
+
+    color: var(--gris-claro);
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   CÍRCULO DE PERFIL
+========================================================= */
+
+.avatar-perfil {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid rgba(57, 169, 0, .25);
+    border-radius: 50%;
+
+    background: #eef8e8;
+
+    color: var(--sena);
+
+    cursor: pointer;
+
+    font-size: 18px;
+
+    transition:
+        background .2s ease,
+        border-color .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+.avatar-perfil:hover {
+    background: #e4f3dc;
+
+    border-color: var(--sena);
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 5px 15px rgba(57, 169, 0, .15);
+}
+
+.avatar-perfil:focus {
+    outline: none;
+
+    box-shadow:
+        0 0 0 3px rgba(57, 169, 0, .13);
+}
+
+
+/* FOTO DENTRO DEL CÍRCULO */
+
+.avatar-perfil img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    border-radius: 50%;
+}
+
+
+/* =========================================================
+   CERRAR SESIÓN
+========================================================= */
+
+.btn-cerrar-sesion {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--borde);
+    border-radius: 9px;
+
+    background: white;
+
+    color: #687281;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+    transition: .2s ease;
+}
+
+.btn-cerrar-sesion:hover {
+    border-color: #e53935;
+
+    background: #fff8f8;
+
+    color: #e53935;
+}
+
+
+/* =========================================================
+   CONTENIDO
+========================================================= */
+
+.contenido-panel {
+    width: 100%;
+    max-width: 1220px;
+
+    margin: 0 auto;
+
+    padding: 38px 30px 60px;
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.panel-heading {
+    margin-bottom: 30px;
+}
+
+.panel-heading h1 {
+    margin: 0 0 7px;
+
+    color: var(--texto);
+
+    font-size: 29px;
+    font-weight: 800;
+
+    letter-spacing: -.4px;
+}
+
+.panel-heading p {
+    margin: 0;
+
+    color: var(--gris);
+
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   SECCIÓN FICHAS
+========================================================= */
+
+.seccion-fichas {
+    width: 100%;
+}
+
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
+
+.fichas-toolbar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 25px;
+
+    margin-bottom: 14px;
+}
+
+
+.fichas-titulo h2 {
+    margin: 0 0 5px;
+
+    color: var(--texto);
+
+    font-size: 18px;
+    font-weight: 800;
+}
+
+
+.fichas-titulo span {
+    color: var(--gris);
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   BUSCADOR
+========================================================= */
+
+.buscador-fichas {
+    width: 350px;
+    height: 43px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 0 14px;
+
+    background: white;
+
+    border: 1px solid var(--borde);
+    border-radius: 9px;
+
+    color: #98a1ad;
+
+    transition: .2s ease;
+}
+
+
+.buscador-fichas:focus-within {
+    border-color: var(--sena);
+
+    box-shadow:
+        0 0 0 3px rgba(57, 169, 0, .09);
+}
+
+
+.buscador-fichas i {
+    font-size: 13px;
+}
+
+
+.buscador-fichas input {
+    width: 100%;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    color: var(--texto);
+
+    font-size: 12px;
+}
+
+
+.buscador-fichas input::placeholder {
+    color: #9ca5b1;
+}
+
+
+/* =========================================================
+   CONTENEDOR DE FICHAS
+========================================================= */
+
+.fichas-container {
+    width: 100%;
+
+    background: white;
+
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 2px 12px rgba(0, 0, 0, .025);
+}
+
+
+/* =========================================================
+   ENCABEZADOS
+========================================================= */
+
+.fichas-header {
+    min-height: 46px;
+
+    display: grid;
+
+    grid-template-columns:
+        190px
+        1fr
+        110px;
+
+    align-items: center;
+
+    padding: 0 20px;
+
+    background: #fafbfc;
+
+    border-bottom: 1px solid var(--borde);
+
+    color: #7d8795;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    letter-spacing: .4px;
+}
+
+
+/* =========================================================
+   LISTA
+========================================================= */
+
+.lista-fichas-asignadas {
+    width: 100%;
+
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+}
+
+
+.lista-fichas-asignadas li {
+    min-height: 67px;
+
+    display: grid;
+
+    grid-template-columns:
+        190px
+        1fr
+        110px;
+
+    align-items: center;
+
+    padding: 0 20px;
+
+    border-bottom: 1px solid var(--borde-suave);
+
+    transition:
+        background .15s ease;
+}
+
+
+.lista-fichas-asignadas li:last-child {
+    border-bottom: none;
+}
+
+
+.lista-fichas-asignadas li:hover {
+    background: #fbfdf9;
+}
+
+
+/* =========================================================
+   DATOS DE FICHA
+========================================================= */
+
+.ficha-identificador {
+    color: var(--texto);
+
+    font-size: 13px;
+    font-weight: 800;
+}
+
+
+.ficha-programa {
+    color: #596579;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   BOTÓN ENTRAR
+========================================================= */
+
+.btn-entrar-ficha {
+    height: 34px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    padding: 0 13px;
+
+    border: 1px solid var(--sena);
+    border-radius: 7px;
+
+    background: white;
+
+    color: var(--sena);
+
+    font-size: 11px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        color .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+
+.btn-entrar-ficha:hover {
+    background: var(--sena);
+
+    color: white;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 5px 12px rgba(57, 169, 0, .16);
+}
+
+
+.btn-entrar-ficha i {
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   SIN RESULTADOS
+========================================================= */
+
+.sin-resultados {
+    padding: 35px 20px;
+
+    text-align: center;
+
+    color: #8b95a2;
+
+    font-size: 12px;
+}
+
+
+.sin-resultados i {
+    margin-bottom: 8px;
+
+    color: #a1a9b4;
+
+    font-size: 17px;
+}
+
+
+.sin-resultados p {
+    margin: 0;
+}
+
+
+/* =========================================================
+   ELEMENTOS DE COMPATIBILIDAD
+=========================================================
+
+   Estos elementos siguen existiendo porque el JS original
+   los utiliza.
+
+   No se muestran visualmente.
+========================================================= */
+
+.elementos-compatibilidad {
+    display: none !important;
+}
+
+.elemento-js {
+    display: none !important;
+}
+
+
+/* =========================================================
+   NOVEDADES
+========================================================= */
+
+.notas-panel {
+    width: 100%;
+
+    margin-top: 35px;
+
+    padding: 27px;
+
+    background: white;
+
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+
+    box-shadow:
+        0 2px 12px rgba(0, 0, 0, .025);
+}
+
+
+/* CABECERA */
+
+.notas-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 25px;
+}
+
+
+.notas-header h2 {
+    margin: 0 0 6px;
+
+    color: var(--texto);
+
+    font-size: 18px;
+    font-weight: 800;
+}
+
+
+.notas-header h2 i {
+    margin-right: 8px;
+
+    color: var(--sena);
+}
+
+
+.notas-header p {
+    margin: 0;
+
+    color: var(--gris);
+
+    font-size: 12px;
+}
+
+
+.estado-notas {
+    flex-shrink: 0;
+
+    padding: 6px 11px;
+
+    border: 1px solid #dcefd3;
+    border-radius: 20px;
+
+    background: #eef8e8;
+
+    color: var(--sena-dark);
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+
+/* CONTENIDO */
+
+.notas-contenido {
+    display: grid;
+
+    grid-template-columns:
+        32%
+        1fr;
+
+    gap: 25px;
+}
+
+
+.campo-ficha label,
+.campo-novedad label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: var(--texto);
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* SELECT */
+
+.notas-panel .form-select {
+    width: 100%;
+    min-height: 44px;
+
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+
+    background: #fafbfc;
+
+    color: var(--texto);
+
+    font-size: 12px;
+}
+
+
+.notas-panel .form-select:focus {
+    border-color: var(--sena);
+
+    background: white;
+
+    box-shadow:
+        0 0 0 3px rgba(57, 169, 0, .09);
+}
+
+
+/* TEXTAREA */
+
+.notas-panel textarea {
+    width: 100%;
+    min-height: 125px;
+
+    padding: 12px;
+
+    resize: vertical;
+
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+
+    background: #fafbfc;
+
+    color: var(--texto);
+
+    font-size: 13px;
+
+    transition: .2s ease;
+}
+
+
+.notas-panel textarea::placeholder {
+    color: #9ba4b0;
+}
+
+
+.notas-panel textarea:focus {
+    border-color: var(--sena);
+
+    background: white;
+
+    box-shadow:
+        0 0 0 3px rgba(57, 169, 0, .09);
+
+    outline: none;
+}
+
+
+/* FOOTER */
+
+.notas-footer {
+    display: flex;
+    justify-content: flex-end;
+
+    margin-top: 20px;
+}
+
+
+/* GUARDAR */
+
+.btn-guardar-notas {
+    min-height: 40px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    padding: 0 16px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: var(--sena);
+
+    color: white;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: .2s ease;
+}
+
+
+.btn-guardar-notas:hover {
+    background: var(--sena-dark);
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 6px 14px rgba(57, 169, 0, .18);
+}
+
+
+/* =========================================================
+   MODAL PERFIL
+========================================================= */
+
+.modal-perfil {
+    border: none !important;
+
+    border-radius: 15px !important;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, .18);
+}
+
+
+.modal-perfil .modal-header {
+    padding: 19px 22px;
+
+    border-bottom: 1px solid var(--borde);
+
+    background: white;
+}
+
+
+.modal-perfil .modal-title {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    color: var(--texto);
+
+    font-size: 16px;
+    font-weight: 800;
+}
+
+
+.modal-perfil .modal-title i {
+    color: var(--sena);
+}
+
+
+/* CUERPO */
+
+.perfil-body {
+    padding: 28px;
+
+    text-align: center;
+}
+
+
+/* FOTO GRANDE */
+
+.perfil-foto {
+    width: 112px;
+    height: 112px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 16px;
+
+    overflow: hidden;
+
+    border: 4px solid white;
+    border-radius: 50%;
+
+    background: #eef8e8;
+
+    color: var(--sena);
+
+    box-shadow:
+        0 0 0 1px #d9e8d2,
+        0 8px 22px rgba(0, 0, 0, .08);
+
+    font-size: 35px;
+}
+
+
+.perfil-foto img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    border-radius: 50%;
+}
+
+
+/* NOMBRE */
+
+.perfil-nombre {
+    margin: 0 0 4px;
+
+    color: var(--texto);
+
+    font-size: 17px;
+    font-weight: 800;
+}
+
+
+.perfil-rol {
+    margin: 0 0 20px;
+
+    color: var(--gris);
+
+    font-size: 11px;
+}
+
+
+/* INPUT FOTO */
+
+#fotoPerfil {
+    display: none;
+}
+
+
+/* BOTÓN FOTO */
+
+.btn-cambiar-foto {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    min-height: 39px;
+
+    padding: 0 15px;
+
+    border-radius: 8px;
+
+    background: var(--sena);
+
+    color: white;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: .2s ease;
+}
+
+
+.btn-cambiar-foto:hover {
+    background: var(--sena-dark);
+
+    transform: translateY(-1px);
+}
+
+
+/* AYUDA */
+
+.perfil-ayuda {
+    margin: 12px 0 0;
+
+    color: #98a1ad;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 850px) {
+
+    .topbar {
+        padding: 0 20px;
+    }
+
+    .topbar-title {
+        margin-left: 20px;
+
+        font-size: 15px;
+    }
+
+    .contenido-panel {
+        padding: 30px 20px 50px;
+    }
+
+    .fichas-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .buscador-fichas {
+        width: 100%;
+    }
+
+    .notas-contenido {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+/* =========================================================
+   TABLET / MÓVIL
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .topbar {
+        height: 65px;
+
+        padding: 0 15px;
+    }
+
+    .topbar-logo img {
+        width: 75px;
+    }
+
+    .topbar-title {
+        display: none;
+    }
+
+    .user-info {
+        display: none;
+    }
+
+    .avatar-perfil {
+        width: 42px;
+        height: 42px;
+
+        font-size: 16px;
+    }
+
+    .btn-cerrar-sesion {
+        width: 38px;
+        height: 38px;
+    }
+
+    .contenido-panel {
+        padding: 25px 15px 40px;
+    }
+
+    .panel-heading h1 {
+        font-size: 24px;
+    }
+
+    .fichas-header {
+        display: none;
+    }
+
+    .lista-fichas-asignadas li {
+
+        min-height: 72px;
+
+        grid-template-columns:
+            1fr
+            auto;
+
+        gap: 5px;
+
+        padding: 13px 15px;
+    }
+
+    .ficha-identificador {
+        grid-column: 1;
+    }
+
+    .ficha-programa {
+        grid-column: 1;
+
+        font-size: 12px;
+    }
+
+    .btn-entrar-ficha {
+        grid-column: 2;
+        grid-row: 1 / 3;
+
+        align-self: center;
+    }
+
+    .notas-panel {
+        padding: 20px;
+    }
+
+    .notas-header {
+        flex-direction: column;
+    }
+
+    .notas-header h2 {
+        font-size: 17px;
+    }
+
+}
+
+
+/* =========================================================
+   MÓVIL PEQUEÑO
+========================================================= */
+
+@media (max-width: 420px) {
+
+    .topbar-user {
+        gap: 7px;
+    }
+
+    .contenido-panel {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .fichas-titulo h2 {
+        font-size: 16px;
+    }
+
+    .lista-fichas-asignadas li {
+        padding: 12px;
+    }
+
+    .notas-panel {
+        padding: 17px;
+    }
+
+}
+
+/* =========================================================
+   PERFIL - FOTO
+========================================================= */
+
+.modal-perfil {
+    border: none !important;
+    border-radius: 22px !important;
+    overflow: hidden;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, .25);
+}
+
+
+/* CUERPO */
+
+.perfil-body {
+    padding: 30px 28px 28px;
+    text-align: center;
+}
+
+
+/* FOTO */
+
+.perfil-foto {
+    width: 110px;
+    height: 110px;
+    margin: 5px auto 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #f1f5f9;
+
+    border: 4px solid #ffffff;
+
+    box-shadow:
+        0 5px 18px rgba(0, 0, 0, .12);
+
+    overflow: hidden;
+
+    color: #94a3b8;
+
+    font-size: 38px;
+}
+
+
+/* IMAGEN */
+
+.perfil-foto img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+}
+
+
+/* NOMBRE */
+
+.perfil-nombre {
+    margin: 0;
+
+    color: #071b34;
+
+    font-size: 21px;
+    font-weight: 800;
+}
+
+
+/* ROL */
+
+.perfil-rol {
+    margin: 5px 0 22px;
+
+    color: #718096;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   BOTÓN SELECCIONAR FOTO
+========================================================= */
+
+.btn-cambiar-foto {
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    min-height: 44px;
+
+    padding: 0 20px;
+
+    border-radius: 10px;
+
+    background: #18a957;
+
+    color: white;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: all .2s ease;
+
+    box-shadow:
+        0 6px 15px rgba(24, 169, 87, .20);
+}
+
+
+.btn-cambiar-foto:hover {
+
+    background: #128a46;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 9px 20px rgba(24, 169, 87, .25);
+}
+
+
+/* OCULTAR INPUT */
+
+#fotoPerfil {
+    display: none;
+}
+
+
+/* =========================================================
+   BOTONES ACEPTAR / CANCELAR / QUITAR
+========================================================= */
+
+.acciones-foto {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 9px;
+
+    flex-wrap: wrap;
+
+    margin-top: 14px;
+
+}
+
+
+/* ESTILO GENERAL */
+
+.acciones-foto button {
+
+    min-height: 40px;
+
+    padding: 0 15px;
+
+    border-radius: 9px;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    cursor: pointer;
+
+    transition: all .2s ease;
+
+}
+
+
+/* =========================================================
+   ACEPTAR
+========================================================= */
+
+.btn-aceptar-foto {
+
+    border: 1px solid #18a957;
+
+    background: #18a957;
+
+    color: white;
+
+}
+
+
+.btn-aceptar-foto:hover {
+
+    background: #128a46;
+
+    border-color: #128a46;
+
+    transform: translateY(-1px);
+
+}
+
+
+/* =========================================================
+   CANCELAR
+========================================================= */
+
+.btn-cancelar-foto {
+
+    border: 1px solid #dce3ec;
+
+    background: #f8fafc;
+
+    color: #475569;
+
+}
+
+
+.btn-cancelar-foto:hover {
+
+    background: #eef2f6;
+
+    border-color: #cbd5e1;
+
+}
+
+
+/* =========================================================
+   QUITAR FOTO
+========================================================= */
+
+.btn-quitar-foto {
+
+    border: 1px solid #fecaca;
+
+    background: #fff5f5;
+
+    color: #dc2626;
+
+}
+
+
+.btn-quitar-foto:hover {
+
+    background: #fee2e2;
+
+    border-color: #fca5a5;
+
+    transform: translateY(-1px);
+
+}
+
+
+/* =========================================================
+   TEXTO DE AYUDA
+========================================================= */
+
+.perfil-ayuda {
+
+    margin: 15px auto 0;
+
+    max-width: 280px;
+
+    color: #94a3b8;
+
+    font-size: 11px;
+
+    line-height: 1.5;
+
+}
+
+
+/* =========================================================
+   HEADER DEL MODAL
+========================================================= */
+
+.modal-perfil .modal-header {
+
+    padding: 20px 24px;
+
+    border-bottom: 1px solid #e8edf4;
+
+}
+
+
+.modal-perfil .modal-title {
+
+    color: #071b34;
+
+    font-size: 18px;
+
+    font-weight: 800;
+
+}
+
+
+.modal-perfil .modal-title i {
+
+    margin-right: 7px;
+
+    color: #18a957;
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 420px) {
+
+    .acciones-foto {
+
+        flex-direction: column;
+
+        width: 100%;
+
+    }
+
+
+    .acciones-foto button {
+
+        width: 100%;
+
+    }
+
+
+    .btn-cambiar-foto {
+
+        width: 100%;
+
+    }
+
+}
+
+.btn-quitar-foto[hidden] {
+    display: none !important;
+}
+
+/* =========================================================
+   DASHBOARD VISUAL DEL INSTRUCTOR
+========================================================= */
+.instructor-dashboard{margin-bottom:28px}.dashboard-title-row{margin-bottom:16px}.dashboard-title-row h2{margin:0;font-size:20px;font-weight:800}.dashboard-title-row p{margin:4px 0 0;color:var(--gris);font-size:12px}.metricas-instructor{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.metric-card{background:#fff;border:1px solid var(--borde);border-radius:15px;padding:16px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 16px rgba(20,40,70,.035)}.metric-icon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:16px}.metric-icon.green{background:#edf9f0;color:#39A900}.metric-icon.blue{background:#edf5ff;color:#1266d6}.metric-icon.amber{background:#fff7df;color:#b77900}.metric-icon.purple{background:#f2edff;color:#6b4bc4}.metric-card span{display:block;color:var(--gris);font-size:10px}.metric-card strong{display:block;font-size:24px;line-height:1.1;margin-top:3px}.graficos-instructor{display:grid;grid-template-columns:1fr 2fr;gap:14px;margin-top:14px}.grafico-card{background:#fff;border:1px solid var(--borde);border-radius:15px;padding:18px;box-shadow:0 4px 16px rgba(20,40,70,.035)}.grafico-head{display:flex;justify-content:space-between;align-items:flex-start}.grafico-head h3{margin:0;font-size:13px;font-weight:800}.grafico-head span{display:block;color:var(--gris);font-size:10px;margin-top:3px}.grafico-head>i{color:var(--sena);font-size:17px}.donut-instructor{width:150px;height:150px;margin:15px auto;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--sena) 0deg 0deg,#1266d6 0deg 0deg,#edf0f3 0deg 360deg);position:relative}.donut-instructor:after{content:'';position:absolute;inset:25px;background:#fff;border-radius:50%}.donut-instructor>div{position:relative;z-index:1;text-align:center}.donut-instructor strong{display:block;font-size:28px}.donut-instructor span{font-size:9px;color:var(--gris)}.leyenda-instructor{display:flex;justify-content:center;gap:20px;font-size:10px}.leyenda-instructor span{display:flex;align-items:center;gap:5px}.leyenda-instructor i{width:8px;height:8px;border-radius:50%;display:inline-block}.dot-green{background:var(--sena)}.dot-blue{background:#1266d6}.barras-avance-instructor{display:flex;flex-direction:column;gap:11px;margin-top:18px;max-height:190px;overflow:auto}.barra-ficha-inst{display:grid;grid-template-columns:85px 1fr 45px;gap:8px;align-items:center;font-size:10px}.barra-ficha-inst .track{height:9px;background:#edf0f3;border-radius:20px;overflow:hidden}.barra-ficha-inst .track span{display:block;height:100%;background:var(--sena);border-radius:20px}.barra-ficha-inst b{text-align:right}.grafico-vacio{text-align:center;color:var(--gris);font-size:11px;padding:30px 0}@media(max-width:900px){.metricas-instructor{grid-template-columns:1fr 1fr}.graficos-instructor{grid-template-columns:1fr}}@media(max-width:560px){.metricas-instructor{grid-template-columns:1fr}.barra-ficha-inst{grid-template-columns:70px 1fr 38px}}

@@ -1,0 +1,22 @@
+# Variables de entorno
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Entorno virtual
+venv/
+.venv/
+env/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Históricos generados por la aplicación
+horarios_historico/
