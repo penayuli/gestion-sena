@@ -1,474 +1,1359 @@
 /* =========================================================
    PRINCIPAL.CSS
-   Rediseño visual — conserva las clases/IDs del HTML original
+   Panel principal - Plan de formación y horario
    ========================================================= */
 
-:root{
-  --verde:#16a34a;
-  --verde-oscuro:#15803d;
-  --verde-suave:#ecfdf3;
-  --azul:#2563eb;
-  --azul-suave:#eff6ff;
-  --rojo:#dc2626;
-  --amarillo:#d97706;
-  --texto:#172033;
-  --muted:#6b7280;
-  --linea:#e5e7eb;
-  --fondo:#f5f7fa;
-  --blanco:#fff;
-  --sombra:0 8px 24px rgba(15,23,42,.07);
-  --radio:16px;
+/* =========================================================
+   1. VARIABLES
+   ========================================================= */
+
+:root {
+    --sena-verde: #39A900;
+    --sena-verde-oscuro: #2E7D32;
+    --sena-verde-suave: #ecfdf3;
+
+    --azul: #2563eb;
+    --azul-suave: #eff6ff;
+
+    --rojo: #dc2626;
+    --rojo-suave: #fee2e2;
+
+    --amarillo: #d97706;
+    --amarillo-suave: #fef3c7;
+
+    --verde-suave-plan: #dcfce7;
+    --azul-suave-plan: #dbeafe;
+
+    --texto: #172033;
+    --muted: #6b7280;
+    --linea: #e5e7eb;
+    --fondo: #f5f7fa;
+    --blanco: #ffffff;
+
+    --sombra: 0 8px 24px rgba(15, 23, 42, .07);
+    --radio: 14px;
 }
 
-*{box-sizing:border-box}
 
-html{scroll-behavior:smooth}
+/* =========================================================
+   2. CONFIGURACIÓN GENERAL
+   ========================================================= */
 
-body{
-  margin:0;
-  background:var(--fondo);
-  color:var(--texto);
-  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+* {
+    box-sizing: border-box;
 }
 
-/* ---------- CONTENEDOR PRINCIPAL ---------- */
+html {
+    scroll-behavior: smooth;
+}
 
-.contenido{
-  margin-left:0 !important;
-  padding:24px clamp(16px,3vw,40px);
-  width:100%;
-  min-height:100vh;
+body {
+    margin: 0;
+    padding: 0;
+    background: var(--fondo) !important;
+    color: var(--texto);
+
+    font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+
+    overflow-x: hidden;
 }
 
 main,
-.container-fluid{
-  max-width:1500px;
-  margin:0 auto;
+.container-fluid {
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
 }
 
-/* ---------- SIDEBAR: OCULTO EN PRINCIPAL ---------- */
 
-.sidebar{
-  display:none !important;
+/* =========================================================
+   3. CONTENIDO PRINCIPAL
+   ========================================================= */
+
+.contenido {
+    margin-left: 0 !important;
+    width: 100%;
+    min-height: 100vh;
+    padding: 24px clamp(16px, 3vw, 40px);
 }
 
-/* ---------- ENCABEZADO ---------- */
+.contenido-principal {
+    width: 100%;
+    padding: 25px;
+}
 
-.encabezado{
-  background:var(--blanco);
-  border:1px solid var(--linea);
-  border-radius:var(--radio);
-  min-height:72px;
-  padding:12px 18px;
-  margin-bottom:22px;
-  box-shadow:var(--sombra);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:16px;
+
+/* =========================================================
+   4. SIDEBAR
+   ========================================================= */
+
+.sidebar {
+    display: none !important;
+}
+
+
+/* =========================================================
+   5. BARRA SUPERIOR
+   ========================================================= */
+
+.topbar {
+    width: 100%;
+    height: 70px;
+
+    background: var(--blanco);
+
+    border-bottom: 2px solid rgba(57, 169, 0, .15);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 30px;
+}
+
+.logo-sena {
+    height: 48px;
+    width: auto;
+}
+
+.usuario {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.usuario i {
+    font-size: 22px;
+}
+
+#nombreUsuario {
+    color: var(--texto);
+    font-weight: 700;
+}
+
+#btnSalir {
+    border-radius: 10px;
+}
+
+#btnNotificaciones {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+}
+
+
+/* =========================================================
+   6. ENCABEZADOS
+   ========================================================= */
+
+.encabezado {
+    min-height: 72px;
+
+    background: var(--blanco);
+    border: 1px solid var(--linea);
+    border-radius: var(--radio);
+
+    padding: 12px 18px;
+    margin-bottom: 22px;
+
+    box-shadow: var(--sombra);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
 }
 
 .encabezado h1,
 .encabezado h2,
-.encabezado h3{
-  margin:0;
-  color:var(--texto);
+.encabezado h3 {
+    margin: 0;
+    color: var(--texto);
 }
 
 .encabezado small,
-.encabezado .text-muted{
-  color:var(--muted)!important;
+.encabezado .text-muted {
+    color: var(--muted) !important;
 }
 
-/* ---------- BARRA SUPERIOR ---------- */
 
-#nombreUsuario{
-  font-weight:700;
-  color:var(--texto);
+/* =========================================================
+   7. CABECERA DE FICHA
+   ========================================================= */
+
+.cabecera-ficha {
+    background: var(--blanco);
+    padding: 25px;
+
+    border: 1px solid var(--linea);
+    border-radius: var(--radio);
+
+    box-shadow: var(--sombra);
 }
 
-#btnSalir{
-  border-radius:10px;
+.cabecera-ficha h2 {
+    margin-bottom: 8px;
+    font-weight: 700;
 }
 
-#btnNotificaciones{
-  width:42px;
-  height:42px;
-  border-radius:50%;
+#numeroFicha {
+    color: var(--sena-verde-oscuro);
+    font-weight: 800;
+    letter-spacing: -.02em;
 }
 
-/* ---------- TARJETAS GENERALES ---------- */
-
-.tarjeta,
-.card{
-  background:var(--blanco);
-  border:1px solid var(--linea);
-  border-radius:var(--radio);
-  box-shadow:var(--sombra);
-}
-
-.tarjeta{
-  padding:20px;
-}
-
-.card{
-  overflow:hidden;
-}
-
-.card-header{
-  background:var(--blanco);
-  border-bottom:1px solid var(--linea);
-  padding:16px 20px;
-  font-weight:700;
-}
-
-.card-body{
-  padding:20px;
-}
-
-/* ---------- CABECERA DE FICHA ---------- */
-
-#numeroFicha{
-  color:var(--verde-oscuro);
-  font-weight:800;
-  letter-spacing:-.02em;
-}
-
-#nombrePrograma{
-  color:var(--texto);
-  font-weight:700;
+#nombrePrograma {
+    color: var(--texto);
+    font-weight: 700;
 }
 
 #modalidad,
 #jornada,
 #trimestre,
-#estado{
-  font-weight:600;
+#estado {
+    font-weight: 600;
 }
 
-#btnVolver{
-  border-radius:10px;
-  font-weight:600;
+#btnVolver {
+    border-radius: 10px;
+    font-weight: 600;
 }
 
-/* ---------- INFORMACIÓN ---------- */
+
+/* =========================================================
+   8. TARJETAS
+   ========================================================= */
+
+.tarjeta,
+.card {
+    background: var(--blanco);
+    border: 1px solid var(--linea);
+    border-radius: var(--radio);
+    box-shadow: var(--sombra);
+}
+
+.tarjeta {
+    padding: 20px;
+}
+
+.card {
+    overflow: hidden;
+}
+
+.card-header {
+    background: var(--blanco);
+    border-bottom: 1px solid var(--linea);
+
+    padding: 16px 20px;
+
+    font-weight: 700;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+
+/* =========================================================
+   9. INFORMACIÓN DE LA FICHA
+   ========================================================= */
 
 .info-ficha,
-.ficha-info{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:14px;
+.ficha-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
 }
 
 .info-ficha > div,
-.ficha-info > div{
-  background:#fafbfc;
-  border:1px solid var(--linea);
-  border-radius:12px;
-  padding:14px;
+.ficha-info > div {
+    background: #fafbfc;
+    border: 1px solid var(--linea);
+    border-radius: 12px;
+    padding: 14px;
+}
+
+.dato-card {
+    background: var(--blanco);
+    padding: 22px;
+    height: 100%;
+
+    border-radius: 14px;
+}
+
+.dato-icono {
+    width: 45px;
+    height: 45px;
+
+    border-radius: 10px;
+
+    background: #eef5ff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #1266d6;
+    font-size: 20px;
+}
+
+.dato-titulo {
+    font-size: 14px;
+    color: #555;
+}
+
+.dato-valor {
+    font-size: 18px;
+    font-weight: 700;
 }
 
 #fechaInicio,
 #fechaFin,
 #duracion,
-#tiempoTranscurrido{
-  font-weight:700;
-  color:var(--texto);
+#tiempoTranscurrido {
+    color: var(--texto);
+    font-weight: 700;
 }
 
-/* ---------- PROGRESO ---------- */
 
-.progress{
-  height:10px;
-  background:#e9edf2;
-  border-radius:999px;
-  overflow:hidden;
+/* =========================================================
+   10. AVANCE
+   ========================================================= */
+
+.avance-card {
+    background: var(--blanco);
+    padding: 20px;
+    height: 100%;
+
+    border-radius: 14px;
 }
 
-.progress-bar{
-  border-radius:999px;
+.avance-numero {
+    font-size: 28px;
+    font-weight: bold;
 }
 
-#barraEsperado{
-  background:var(--azul)!important;
+.progress {
+    height: 10px;
+    background: #e9edf2;
+    border-radius: 999px;
+    overflow: hidden;
 }
 
-#barraReal{
-  background:var(--verde)!important;
+.progress-bar {
+    border-radius: 999px;
+}
+
+#barraEsperado {
+    background: var(--azul) !important;
+}
+
+#barraReal {
+    background: var(--sena-verde) !important;
 }
 
 #avanceEsperado,
 #avanceReal,
-#diferencia{
-  font-weight:800;
+#diferencia {
+    font-weight: 800;
 }
 
-/* ---------- BOTONES ---------- */
-
-.btn{
-  border-radius:10px;
-  font-weight:600;
+.barra {
+    height: 12px;
+    background: #e9eef5;
+    border-radius: 20px;
+    overflow: hidden;
 }
 
-.btn-success{
-  background:var(--verde);
-  border-color:var(--verde);
+.barra-progreso {
+    height: 100%;
+    border-radius: 20px;
 }
 
-.btn-success:hover{
-  background:var(--verde-oscuro);
-  border-color:var(--verde-oscuro);
+.barra-progreso.bg-primary {
+    background-color: var(--sena-verde) !important;
 }
 
-.btn-outline-success{
-  color:var(--verde-oscuro);
-  border-color:#86efac;
+
+/* =========================================================
+   11. BOTONES
+   ========================================================= */
+
+.btn {
+    border-radius: 10px;
+    font-weight: 600;
 }
 
-.btn-outline-success:hover{
-  background:var(--verde);
-  border-color:var(--verde);
+.btn-success,
+.boton-verde {
+    background: var(--sena-verde) !important;
+    border-color: var(--sena-verde) !important;
+    color: white !important;
 }
 
-.btn-primary{
-  background:var(--azul);
-  border-color:var(--azul);
+.btn-success:hover,
+.boton-verde:hover {
+    background: var(--sena-verde-oscuro) !important;
+    border-color: var(--sena-verde-oscuro) !important;
+    color: white !important;
 }
 
-/* ---------- PLAN FORMATIVO ---------- */
-
-#busquedaPlan{
-  min-height:44px;
-  border-radius:11px;
-  border:1px solid var(--linea);
-  box-shadow:none;
+.btn-outline-success {
+    color: var(--sena-verde-oscuro);
+    border-color: #86efac;
 }
 
-#busquedaPlan:focus{
-  border-color:#93c5fd;
-  box-shadow:0 0 0 3px rgba(37,99,235,.1);
+.btn-outline-success:hover {
+    background: var(--sena-verde);
+    border-color: var(--sena-verde);
+    color: white;
 }
 
-#navegacionFases{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin-bottom:16px;
+.btn-primary,
+.boton-azul {
+    background: var(--azul);
+    border-color: var(--azul);
+    color: white;
 }
 
-#navegacionFases .btn{
-  border-radius:9px;
+.btn-outline-primary {
+    color: var(--sena-verde) !important;
+    border-color: var(--sena-verde) !important;
 }
 
-#tablaActividades,
-#tablaHorario{
-  margin-bottom:0;
+.btn-outline-primary:hover {
+    color: white !important;
+    background: var(--sena-verde) !important;
 }
 
-.table{
-  --bs-table-bg:transparent;
-  vertical-align:middle;
+
+/* =========================================================
+   12. PLAN DE FORMACIÓN - BARRA DE HERRAMIENTAS
+   ========================================================= */
+
+.plan-toolbar {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
-.table thead th{
-  background:#f8fafc;
-  color:#475569;
-  font-size:.78rem;
-  text-transform:uppercase;
-  letter-spacing:.04em;
-  font-weight:800;
-  border-bottom:1px solid var(--linea);
-  white-space:nowrap;
+.plan-search-wrap {
+    position: relative;
+
+    flex: 1 1 430px;
+    min-width: 280px;
 }
 
-.table tbody td{
-  border-color:#edf0f3;
-  padding:13px 12px;
+.plan-search-wrap i {
+    position: absolute;
+
+    left: 13px;
+    top: 11px;
+
+    color: var(--muted);
+
+    z-index: 2;
 }
 
-.table tbody tr:hover{
-  background:#fafdfb;
+#busquedaPlan {
+    width: 100%;
+    min-height: 44px;
+
+    padding-left: 38px;
+
+    border-radius: 11px;
+    border: 1px solid var(--linea);
+
+    box-shadow: none;
 }
 
-/* ---------- ESTADÍSTICAS DEL PLAN ---------- */
+#busquedaPlan:focus {
+    border-color: #93c5fd;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, .1);
+}
+
+.plan-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+
+/* =========================================================
+   13. NAVEGACIÓN DE FASES
+   ========================================================= */
+
+#navegacionFases,
+.fase-nav {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    margin-top: 14px;
+    margin-bottom: 16px;
+}
+
+#navegacionFases .btn,
+.fase-nav .btn {
+    border-radius: 20px;
+}
+
+.fase-nav .fase-info {
+    margin-left: auto;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   14. TABLA DEL PLAN DE FORMACIÓN
+   SIN BARRA HORIZONTAL
+   ========================================================= */
+
+/* =========================================================
+   14. TABLA DEL PLAN DE FORMACIÓN
+   ========================================================= */
+
+.tabla-contenedor {
+    width: 100%;
+    max-width: 100%;
+    background: var(--blanco);
+    padding: 16px;
+    border-radius: 14px;
+    margin-top: 20px;
+    overflow: hidden;
+}
+
+.tabla-scroll,
+.table-responsive {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden !important;
+    overflow-y: visible;
+}
+
+
+/* =========================================================
+   15. TABLA PRINCIPAL
+   ========================================================= */
+
+#tablaActividades {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 0;
+}
+
+.tabla-actividades {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    table-layout: fixed !important;
+    border-collapse: collapse;
+
+    font-size: 12px !important;
+}
+
+
+/* =========================================================
+   16. ENCABEZADOS
+   ========================================================= */
+
+.tabla-actividades th {
+    background: #f8fafc;
+    color: #334155;
+
+    font-size: 11px !important;
+    font-weight: 800;
+
+    text-transform: uppercase;
+    letter-spacing: .01em;
+
+    text-align: center;
+    vertical-align: middle;
+
+    border-bottom: 1px solid var(--linea);
+
+    padding: 10px 6px !important;
+
+    white-space: normal !important;
+    overflow-wrap: break-word;
+    word-break: normal;
+
+    line-height: 1.2;
+}
+
+
+/* =========================================================
+   17. CELDAS
+   ========================================================= */
+
+.tabla-actividades td {
+    border-color: #edf0f3;
+
+    padding: 10px 7px !important;
+
+    vertical-align: middle !important;
+
+    white-space: normal !important;
+
+    overflow-wrap: break-word;
+    word-break: normal;
+
+    line-height: 1.35;
+
+    font-size: 12px !important;
+
+    color: #172033;
+}
+
+
+/* =========================================================
+   18. ANCHO DE LAS COLUMNAS
+   ========================================================= */
+
+/*
+   La fase queda más angosta.
+   Las columnas con textos largos reciben más espacio.
+
+   TOTAL = 100%
+*/
+
+/* =========================================================
+   18. ANCHOS DE LAS COLUMNAS
+   ========================================================= */
+
+/* 1 - Número */
+.tabla-actividades th:nth-child(1),
+.tabla-actividades td:nth-child(1) {
+    width: 3%;
+    text-align: center;
+}
+
+/* 2 - Fase de proyecto
+   Más estrecha para que no se robe espacio */
+.tabla-actividades th:nth-child(2),
+.tabla-actividades td:nth-child(2) {
+    width: 6%;
+}
+
+/* 3 - Actividad de proyecto */
+.tabla-actividades th:nth-child(3),
+.tabla-actividades td:nth-child(3) {
+    width: 12%;
+}
+
+/* 4 - Competencia */
+.tabla-actividades th:nth-child(4),
+.tabla-actividades td:nth-child(4) {
+    width: 13%;
+}
+
+/* 5 - Resultados de aprendizaje */
+.tabla-actividades th:nth-child(5),
+.tabla-actividades td:nth-child(5) {
+    width: 16%;
+}
+
+/* 6 - Actividades de aprendizaje */
+.tabla-actividades th:nth-child(6),
+.tabla-actividades td:nth-child(6) {
+    width: 18%;
+}
+
+/* 7 - Horas trabajo directo */
+.tabla-actividades th:nth-child(7),
+.tabla-actividades td:nth-child(7) {
+    width: 5%;
+    text-align: center;
+}
+
+/* 8 - Horas trabajo independiente */
+.tabla-actividades th:nth-child(8),
+.tabla-actividades td:nth-child(8) {
+    width: 5%;
+    text-align: center;
+}
+
+/* 9 - Instructor */
+.tabla-actividades th:nth-child(9),
+.tabla-actividades td:nth-child(9) {
+    width: 10%;
+    text-align: center;
+}
+
+/* 10 - Juicio de evaluación
+   MÁS ANCHA para que APROBADO se vea completo */
+.tabla-actividades th:nth-child(10),
+.tabla-actividades td:nth-child(10) {
+    width: 12%;
+    text-align: center;
+}
+
+/* =========================================================
+   19. CELDAS COMBINADAS
+   ========================================================= */
+
+.plan-grupo-celda {
+    vertical-align: middle !important;
+    text-align: center;
+
+    white-space: normal !important;
+
+    overflow-wrap: break-word;
+    word-break: normal;
+
+    line-height: 1.35;
+
+    font-size: 12px !important;
+}
+
+
+/* =========================================================
+   20. INSTRUCTOR
+   ========================================================= */
+
+.tabla-actividades td:nth-child(9) input,
+.tabla-actividades td:nth-child(9) .form-control {
+    width: 100% !important;
+    min-width: 0 !important;
+
+    font-size: 12px !important;
+
+    padding: 8px 7px;
+}
+
+
+/* =========================================================
+   21. JUICIO DE EVALUACIÓN
+   ========================================================= */
+
+.tabla-actividades td:nth-child(10) {
+    padding: 6px 4px !important;
+}
+
+.tabla-actividades td:nth-child(10) select,
+.plan-estado-select {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100%;
+
+    font-size: 11px !important;
+
+    padding: 7px 20px 7px 6px;
+
+    white-space: normal;
+}
+
+
+/* =========================================================
+   COLORES DE LOS JUICIOS
+   ========================================================= */
+
+.plan-fila-aprobado td {
+    background: var(--verde-suave-plan) !important;
+}
+
+.plan-fila-pendiente td {
+    background: var(--amarillo-suave) !important;
+}
+
+.plan-fila-ejecucion td {
+    background: var(--azul-suave-plan) !important;
+}
+
+.plan-fila-sin-calificar td {
+    background: var(--rojo-suave) !important;
+}
+
+
+/* Indicador lateral */
+
+.plan-fila-aprobado td:first-child {
+    border-left: 4px solid #16a34a;
+}
+
+.plan-fila-pendiente td:first-child {
+    border-left: 4px solid #f59e0b;
+}
+
+.plan-fila-ejecucion td:first-child {
+    border-left: 4px solid #2563eb;
+}
+
+.plan-fila-sin-calificar td:first-child {
+    border-left: 4px solid #dc2626;
+}
+
+
+/* Select según juicio */
+
+.plan-estado-select.estado-aprobado {
+    border-color: #16a34a;
+    background: var(--verde-suave-plan);
+}
+
+.plan-estado-select.estado-pendiente {
+    border-color: #f59e0b;
+    background: var(--amarillo-suave);
+}
+
+.plan-estado-select.estado-ejecucion {
+    border-color: #2563eb;
+    background: var(--azul-suave-plan);
+}
+
+.plan-estado-select.estado-sin-calificar {
+    border-color: #dc2626;
+    background: var(--rojo-suave);
+    color: #991b1b;
+}
+
+
+/* =========================================================
+   22. ESTADÍSTICAS DEL PLAN
+   ========================================================= */
+
+.estadisticas {
+    width: 100%;
+
+    background: var(--blanco);
+
+    margin-top: 20px;
+    padding: 20px;
+
+    border-radius: 14px;
+
+    box-shadow: var(--sombra);
+}
+
+.estadistica {
+    text-align: center;
+    border-right: 1px solid #ddd;
+}
+
+.estadistica:last-child {
+    border-right: none;
+}
+
+.estadistica-titulo {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.estadistica-numero {
+    font-size: 20px;
+    font-weight: bold;
+}
 
 #totalActividades,
 #actividadesFinalizadas,
 #actividadesProceso,
-#actividadesPendientes{
-  font-size:1.35rem;
-  font-weight:800;
+#actividadesPendientes {
+    font-size: 1.35rem;
+    font-weight: 800;
+}
+/* =========================================================
+   22. ESTADÍSTICAS DEL PLAN
+   ========================================================= */
+
+.estadisticas {
+    width: 100%;
+
+    background: var(--blanco);
+
+    margin-top: 20px;
+    padding: 20px;
+
+    border-radius: 14px;
+
+    box-shadow: var(--sombra);
 }
 
-/* ---------- HORARIO ---------- */
+.estadistica {
+    text-align: center;
 
-#trimestreActualHorario{
-  font-weight:800;
-  border-radius:999px;
+    border-right: 1px solid #ddd;
+}
+
+.estadistica:last-child {
+    border-right: none;
+}
+
+.estadistica-titulo {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.estadistica-numero {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#totalActividades,
+#actividadesFinalizadas,
+#actividadesProceso,
+#actividadesPendientes {
+    font-size: 1.35rem;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   23. HORARIO
+   ========================================================= */
+
+#trimestreActualHorario {
+    font-weight: 800;
+    border-radius: 999px;
 }
 
 #alertaHorario,
-#alertaTrimestreHorario{
-  border-radius:12px;
+#alertaTrimestreHorario {
+    border-radius: 12px;
 }
 
-#tablaHorario td:last-child{
-  white-space:nowrap;
+.alerta-trimestre {
+    border-left: 5px solid #f59e0b;
 }
 
-/* ---------- MODALES ---------- */
+#tablaHorario {
+    width: 100%;
+    max-width: 100%;
 
-.modal-content{
-  border:0;
-  border-radius:18px;
-  overflow:hidden;
-  box-shadow:0 20px 60px rgba(15,23,42,.2);
+    margin-bottom: 0;
 }
 
-.modal-header{
-  border-bottom:1px solid var(--linea);
-  padding:16px 20px;
+#tablaHorario td:last-child {
+    white-space: normal;
 }
 
-.modal-header.bg-success{
-  background:linear-gradient(135deg,var(--verde),var(--verde-oscuro))!important;
+.historial-horarios {
+    margin-top: 18px;
 }
 
-.modal-title{
-  font-weight:800;
+.horario-manual-fila {
+    background: #f8fafc;
+
+    border: 1px solid var(--linea);
+    border-radius: 12px;
+
+    padding: 14px;
+    margin-bottom: 12px;
 }
 
-.modal-body{
-  padding:22px;
+.horario-manual-fila:hover {
+    border-color: #bbf7d0;
 }
 
-.modal-footer{
-  padding:15px 20px;
-  border-top:1px solid var(--linea);
+.btn-quitar-fila {
+    border-radius: 9px;
 }
 
-/* ---------- CAMPOS ---------- */
+
+/* =========================================================
+   24. FORMULARIOS
+   ========================================================= */
 
 .form-control,
-.form-select{
-  min-height:42px;
-  border-color:#dbe1e8;
-  border-radius:10px;
+.form-select {
+    min-height: 42px;
+
+    border-color: #dbe1e8;
+
+    border-radius: 10px;
 }
 
 .form-control:focus,
-.form-select:focus{
-  border-color:#86efac;
-  box-shadow:0 0 0 3px rgba(22,163,74,.1);
+.form-select:focus {
+    border-color: #86efac;
+
+    box-shadow:
+        0 0 0 3px rgba(22, 163, 74, .1);
 }
 
-.form-label{
-  font-weight:700;
-  color:#374151;
+.form-label {
+    font-weight: 700;
+    color: #374151;
 }
 
-/* ---------- IMPORTACIÓN ---------- */
 
-.preview-import{
-  min-height:130px;
-  max-height:360px;
-  overflow:auto;
-  background:#fafbfc;
-  border-color:var(--linea)!important;
-  border-radius:12px!important;
+/* =========================================================
+   25. IMPORTACIÓN DE EXCEL
+   ========================================================= */
+
+.preview-import {
+    min-height: 130px;
+    max-height: 360px;
+
+    overflow: auto;
+
+    background: #fafbfc;
+
+    border-color: var(--linea) !important;
+    border-radius: 12px !important;
 }
 
-.empty-preview{
-  min-height:120px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  gap:8px;
-  color:var(--muted);
-  text-align:center;
+.empty-preview {
+    min-height: 120px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+    color: var(--muted);
+
+    text-align: center;
 }
 
-.empty-preview i{
-  font-size:28px;
+.empty-preview i {
+    font-size: 28px;
 }
 
 #resultadoImportacion,
-#resultadoImportacionHorario{
-  border-radius:10px;
+#resultadoImportacionHorario {
+    border-radius: 10px;
 }
 
-/* ---------- FILAS DE HORARIO MANUAL ---------- */
 
-.horario-manual-fila{
-  background:#f8fafc;
-  border:1px solid var(--linea);
-  border-radius:12px;
-  padding:14px;
-  margin-bottom:12px;
+/* =========================================================
+   26. AUTOCOMPLETE
+   ========================================================= */
+
+.autocomplete-wrap {
+    position: relative;
 }
 
-.horario-manual-fila:hover{
-  border-color:#bbf7d0;
+.autocomplete-list {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    top: 100%;
+
+    z-index: 1065;
+
+    background: #fff;
+
+    border: 1px solid #d9dee5;
+
+    border-radius: 0 0 10px 10px;
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, .12);
+
+    max-height: 230px;
+
+    overflow-y: auto;
 }
 
-.btn-quitar-fila{
-  border-radius:9px;
+.autocomplete-item {
+    padding: 9px 12px;
+    cursor: pointer;
 }
 
-/* ---------- SUGERENCIAS ---------- */
+.autocomplete-item:hover {
+    background: #eef8e9;
+}
+
+.autocomplete-empty {
+    padding: 9px 12px;
+    color: var(--muted);
+}
 
 .autocomplete-suggestions,
-[id$="Suggestions"]{
-  position:relative;
-  z-index:1056;
+[id$="Suggestions"] {
+    position: relative;
+    z-index: 1056;
 }
 
-/* ---------- BADGES ---------- */
 
-.badge{
-  font-weight:700;
-  border-radius:999px;
-  padding:.45em .7em;
+/* =========================================================
+   27. BADGES Y ESTADOS
+   ========================================================= */
+
+.badge {
+    font-weight: 700;
+
+    border-radius: 999px;
+
+    padding: .45em .7em;
 }
 
-/* ---------- RESPONSIVE ---------- */
+.estado {
+    font-weight: bold;
 
-@media (max-width:900px){
-  .contenido{
-    padding:16px;
-  }
+    padding: 7px 15px;
 
-  .encabezado{
-    align-items:flex-start;
-    flex-direction:column;
-  }
+    border-radius: 8px;
 
-  .table-responsive{
-    border-radius:12px;
-  }
+    display: inline-block;
 }
 
-@media (max-width:576px){
-  .contenido{
-    padding:10px;
-  }
+.estado-retrasada {
+    background: #ffe1e1;
+    color: #dc2626;
+}
 
-  .tarjeta,
-  .card{
-    border-radius:12px;
-  }
+.estado-normal {
+    background: #dff7e8;
+    color: #15803d;
+}
 
-  .card-body,
-  .tarjeta{
-    padding:14px;
-  }
+.estado-proceso {
+    background: #fff3cd;
+    color: #a16207;
+}
 
-  .modal-body{
-    padding:15px;
-  }
 
-  .btn{
-    font-size:.9rem;
-  }
+/* =========================================================
+   28. MODALES
+   ========================================================= */
+
+.modal-content {
+    border: 0;
+
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 20px 60px rgba(15, 23, 42, .2);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--linea);
+
+    padding: 16px 20px;
+}
+
+.modal-header.bg-success {
+    background:
+        linear-gradient(
+            135deg,
+            var(--sena-verde),
+            var(--sena-verde-oscuro)
+        ) !important;
+}
+
+.modal-title {
+    font-weight: 800;
+}
+
+.modal-body {
+    padding: 22px;
+}
+
+.modal-footer {
+    padding: 15px 20px;
+
+    border-top: 1px solid var(--linea);
+}
+
+
+/* =========================================================
+   29. OTROS ELEMENTOS
+   ========================================================= */
+
+.plan-instructor-input {
+    min-width: 0;
+    width: 100%;
+}
+
+.seccion-notas-ficha {
+    border-left: 5px solid var(--sena-verde);
+}
+
+.seccion-notas-ficha .notas-badge {
+    color: var(--sena-verde-oscuro);
+    font-weight: 600;
+}
+
+.text-primary {
+    color: var(--sena-verde-oscuro) !important;
+}
+
+.bg-primary {
+    background-color: var(--sena-verde) !important;
+}
+
+
+/* =========================================================
+   30. RESPONSIVE
+   ========================================================= */
+
+/* -----------------------------------------
+   Pantallas medianas
+   ----------------------------------------- */
+
+@media (max-width: 1200px) {
+
+    .tabla-actividades {
+        font-size: 9.5px;
+    }
+
+    .tabla-actividades th {
+        font-size: 9px !important;
+    }
+
+    .tabla-actividades td {
+        font-size: 9.5px;
+    }
+
+    .tabla-actividades th,
+    .tabla-actividades td {
+        padding: 5px 4px !important;
+    }
+
+}
+
+
+/* -----------------------------------------
+   Tablets
+   ----------------------------------------- */
+
+@media (max-width: 900px) {
+
+    .contenido {
+        padding: 16px;
+    }
+
+    .contenido-principal {
+        padding: 16px;
+    }
+
+    .encabezado {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .topbar {
+        padding: 0 16px;
+    }
+
+    .tabla-actividades {
+        font-size: 8.5px;
+    }
+
+    .tabla-actividades th {
+        font-size: 8px !important;
+    }
+
+    .tabla-actividades td {
+        font-size: 8.5px;
+    }
+
+    .tabla-actividades th,
+    .tabla-actividades td {
+        padding: 4px 3px !important;
+    }
+
+    .tabla-actividades select.form-select {
+        font-size: 8px;
+        padding: 3px 16px 3px 3px;
+    }
+
+    .table-responsive,
+    .tabla-scroll {
+        overflow-x: hidden !important;
+    }
+
+}
+
+
+/* -----------------------------------------
+   Celulares
+   ----------------------------------------- */
+
+@media (max-width: 576px) {
+
+    .contenido {
+        padding: 10px;
+    }
+
+    .contenido-principal {
+        padding: 10px;
+    }
+
+    .topbar {
+        height: 60px;
+        padding: 0 10px;
+    }
+
+    .logo-sena {
+        height: 40px;
+    }
+
+    .tarjeta,
+    .card,
+    .cabecera-ficha,
+    .dato-card,
+    .avance-card,
+    .tabla-contenedor {
+        border-radius: 12px;
+    }
+
+    .card-body,
+    .tarjeta {
+        padding: 14px;
+    }
+
+    .modal-body {
+        padding: 15px;
+    }
+
+    .btn {
+        font-size: .9rem;
+    }
+
+    .tabla-actividades {
+        font-size: 7px;
+    }
+
+    .tabla-actividades th {
+        font-size: 7px !important;
+    }
+
+    .tabla-actividades td {
+        font-size: 7px;
+    }
+
+    .tabla-actividades th,
+    .tabla-actividades td {
+        padding: 3px 2px !important;
+    }
+
+    .tabla-actividades select.form-select {
+        font-size: 7px;
+        padding: 2px 12px 2px 2px;
+    }
+
+    .estadistica {
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+    }
+
+    .estadistica:last-child {
+        border-bottom: none;
+    }
 }
