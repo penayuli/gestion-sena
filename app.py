@@ -12,6 +12,10 @@ from models import *
 
 app = Flask(__name__)
 app.config.from_object(Config)
+
+print("SECRET:", bool(app.config.get("SECRET_KEY")))
+print("JWT SECRET:", bool(app.config.get("JWT_SECRET_KEY")))
+
 db.init_app(app); bcrypt.init_app(app); jwt.init_app(app)
 app.register_blueprint(auth); app.register_blueprint(fichas); app.register_blueprint(importar_excel); app.register_blueprint(horarios); app.register_blueprint(notas); app.register_blueprint(auxiliar); app.register_blueprint(admin)
 

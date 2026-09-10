@@ -132,46 +132,111 @@ def eventos_actividad(limite=500, accion=""):
 @jwt_required()
 def overview():
     if not solo_admin():
-        return jsonify({"mensaje": "Solo un administrador puede consultar este panel."}), 403
+        return jsonify({
+            "mensaje": "Solo un administrador puede consultar este panel."
+        }), 403
 
     sincronizar_estados_fichas()
-    fichas = Ficha.query.order_by(Ficha.numero_ficha.asc()).all()
-    ficha_rows = [ficha_row(f) for f in fichas]
-    actividades_finalizadas = db.session.execute(text("SELECT COUNT(*) FROM actividades WHERE estado = 'Finalizada'")).scalar() or 0
-    actividades_total = db.session.execute(text("SELECT COUNT(*) FROM actividades")).scalar() or 0
-    usuarios_activos = Usuario.query.filter_by(estado=True).count()
+
+    fichas = Ficha.query.order_by(
+        Ficha.numero_ficha.asc()
+    ).all()
+
+    ficha_rows = [
+        ficha_row(f)
+        for f in fichas
+    ]
+
+    # La tabla "actividades" ya no existe en Supabase.
+    # Las actividades actuales del sistema están relacionadas
+    # con el Plan de Formación.
+    actividades_total = PlanFormacion.query.count()
+
+    actividades_finalizadas = PlanFormacion.query.filter(
+        PlanFormacion.juicio_evaluacion == "APROBADO"
+    ).count()
+
+    usuarios_activos = Usuario.query.filter_by(
+        estado=True
+    ).count()
+
     usuarios_total = Usuario.query.count()
+
     instructores = Instructor.query.count()
+
     programas = Programa.query.count()
+
     planes = PlanFormacion.query.count()
+
     horarios_total = Horario.query.count()
 
-    # Mantiene compatibilidad con instalaciones anteriores: si aún no existe la tabla de auditoría,
-    # el panel sigue funcionando y la migración de app.py la crea al iniciar.
     recientes = eventos_actividad(500)
 
     return jsonify({
-        "usuario_actual": {"id": int(get_jwt_identity()), "rol": get_jwt().get("rol")},
+        "usuario_actual": {
+            "id": int(get_jwt_identity()),
+            "rol": get_jwt().get("rol")
+        },
+
         "stats": {
             "fichas": len(fichas),
-            "fichas_activas": sum(1 for f in fichas if f.estado == "Activa"),
-            "fichas_terminadas": sum(1 for f in fichas if f.estado == "Terminada"),
-            "fichas_suspendidas": sum(1 for f in fichas if f.estado == "Suspendida"),
+
+            "fichas_activas": sum(
+                1 for f in fichas
+                if f.estado == "Activa"
+            ),
+
+            "fichas_terminadas": sum(
+                1 for f in fichas
+                if f.estado == "Terminada"
+            ),
+
+            "fichas_suspendidas": sum(
+                1 for f in fichas
+                if f.estado == "Suspendida"
+            ),
+
             "instructores": instructores,
+
             "programas": programas,
+
             "planes": planes,
+
             "usuarios_activos": usuarios_activos,
+
             "usuarios_total": usuarios_total,
+
             "actividades_finalizadas": actividades_finalizadas,
+
             "actividades_total": actividades_total,
+
             "horarios": horarios_total,
-            "alertas_sin_plan": sum(1 for f in ficha_rows if "SIN_PLAN" in f.get("alertas", [])),
-            "alertas_sin_horario": sum(1 for f in ficha_rows if "SIN_HORARIO" in f.get("alertas", [])),
-            "alertas_raps": sum(1 for f in ficha_rows if "RAPS_SIN_CALIFICAR" in f.get("alertas", [])),
-            "fichas_con_alertas": sum(1 for f in ficha_rows if f.get("alertas")),
+
+            "alertas_sin_plan": sum(
+                1 for f in ficha_rows
+                if "SIN_PLAN" in f.get("alertas", [])
+            ),
+
+            "alertas_sin_horario": sum(
+                1 for f in ficha_rows
+                if "SIN_HORARIO" in f.get("alertas", [])
+            ),
+
+            "alertas_raps": sum(
+                1 for f in ficha_rows
+                if "RAPS_SIN_CALIFICAR" in f.get("alertas", [])
+            ),
+
+            "fichas_con_alertas": sum(
+                1 for f in ficha_rows
+                if f.get("alertas")
+            )
         },
+
         "fichas": ficha_rows,
-        "recientes": recientes,
+
+        "recientes": recientes
+
     }), 200
 
 @admin.route("/admin/fichas/<int:id_ficha>/estado", methods=["PUT"])
