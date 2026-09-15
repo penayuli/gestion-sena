@@ -1991,6 +1991,65 @@ document
     );
 
 
+const btnPlantillaHorario = document.getElementById("btnPlantillaHorario");
+
+if (btnPlantillaHorario) {
+    btnPlantillaHorario.addEventListener("click", async () => {
+        try {
+            const respuesta = await fetch("/plantillas/horario", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            if (respuesta.status === 401) {
+                sesionExpirada();
+                return;
+            }
+
+            if (!respuesta.ok) {
+                const error = await respuesta.json().catch(() => ({}));
+
+                alert(
+                    error.mensaje ||
+                    "No se pudo descargar la plantilla de horario."
+                );
+
+                return;
+            }
+
+            const archivo = await respuesta.blob();
+
+            const url = window.URL.createObjectURL(archivo);
+
+            const enlace = document.createElement("a");
+
+            enlace.href = url;
+            enlace.download = "plantilla_horario.xlsx";
+
+            document.body.appendChild(enlace);
+
+            enlace.click();
+
+            enlace.remove();
+
+            window.URL.revokeObjectURL(url);
+
+        } catch (error) {
+
+            console.error(
+                "Error descargando plantilla de horario:",
+                error
+            );
+
+            alert(
+                "No se pudo descargar la plantilla de horario."
+            );
+        }
+    });
+}
+
 document
     .getElementById(
         "btnMostrarColumnasPrincipal"
@@ -2259,6 +2318,65 @@ function resetImportHorario() {
         columnasHorarioPrincipal
     );
 }
+
+/* =====================================================
+   VISTA PREVIA DEL HORARIO
+===================================================== */
+
+document
+    .getElementById("btnVistaPreviaHorario")
+    ?.addEventListener(
+        "click",
+        () => {
+
+            prepararPreviewImport(
+                "archivoHorario",
+                "previewHorarioPrincipal",
+                "contadorPreviewHorario",
+                "resumenFilasHorario",
+                "estadoImportacionHorario",
+                "btnSubirHorario"
+            );
+
+        }
+    );
+
+
+/* =====================================================
+   SELECCIÓN DEL ARCHIVO DE HORARIO
+===================================================== */
+
+document
+    .getElementById("archivoHorario")
+    ?.addEventListener(
+        "change",
+        event => {
+
+            const archivo =
+                event.target.files?.[0];
+
+            setText(
+                "estadoImportacionHorario",
+                archivo
+                    ? `Archivo seleccionado: ${archivo.name}`
+                    : ""
+            );
+
+            document
+                .getElementById("btnSubirHorario")
+                ?.classList.add("d-none");
+
+            setText(
+                "contadorPreviewHorario",
+                "0 filas"
+            );
+
+            setText(
+                "resumenFilasHorario",
+                "0"
+            );
+        }
+    );
 
 
 /* =====================================================

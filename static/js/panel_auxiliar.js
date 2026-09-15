@@ -269,6 +269,7 @@ function renderPlanRows(rows){
     document.getElementById('tablaPlan').innerHTML=base.map(p=>`<tr class="" data-plan-id="${escAuto(p.id)}"><td>${escAuto(p.trimestre)}</td><td>${escAuto(p.orden)}</td><td>${escAuto(p.fase)}</td><td>${escAuto(p.competencia)}</td><td>${escAuto(p.resultado)}</td><td>${escAuto(p.instructor||'Sin instructor')}</td><td>${escAuto(p.horas_directas)}</td><td>${escAuto(p.horas_independientes)}</td><td>${escAuto(p.juicio_evaluacion||"Sin juicio registrado")}</td><td><button type="button" class="btn btn-sm btn-outline-danger" title="Eliminar este registro" onclick="eliminarPlanAux(${escAuto(p.id)})"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('')||'<tr><td colspan="10" class="text-center text-muted">No hay coincidencias.</td></tr>';
 }
 function filtrarPlan(){planBusquedaAux=(document.getElementById('buscarPlan')?.value||'').trim();renderPlanRows(planRowsCache);}
+document.getElementById('planFicha')?.addEventListener('change', cargarPlan);
 
 
 async function eliminarPlanAux(id){

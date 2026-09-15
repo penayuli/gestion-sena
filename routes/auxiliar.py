@@ -424,8 +424,15 @@ def importar_plan_evaluacion(id_ficha):
         # El plan de evaluación puede traer encabezados antes de la tabla;
         # solo verificamos que exista al menos una referencia reconocible.
         textos=" ".join(" ".join(str(x).lower() for x in row if str(x)!="nan") for row in prueba.values)
-        if "resultados de aprendizajes" not in textos and "resultados aprendizajes" not in textos:
+        if (
+            "resultados de aprendizajes" not in textos 
+            and "resultados aprendizajes" not in textos
+            and "resultados de aprendizaje" not in textos
+            and "resultados de aprendizajes" not in textos
+            and "resultados aprendizajes" not in textos):
             return jsonify({"mensaje":"El Excel no parece ser un plan de evaluación: no se encontró Resultado de Aprendizaje."}),400
+
+        
         import os
         carpeta=os.path.join(BASE_PLAN_EVAL, f"ficha_{ficha.numero_ficha}")
         os.makedirs(carpeta, exist_ok=True)
