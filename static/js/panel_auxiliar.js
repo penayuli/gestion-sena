@@ -310,21 +310,84 @@ async function exportarPlan(){
 }
 
 function seleccionarPlanEvaluacion(){
-    const ficha=document.getElementById('planFicha')?.value;
-    if(!ficha){alert('Seleccione primero una ficha.');return;}
-    document.getElementById('archivoPlanEvaluacion')?.click();
+    const ficha = document.getElementById('planFicha')?.value;
+
+    if(!ficha){
+        alert('Seleccione primero una ficha.');
+        return;
+    }
+
+    const input = document.getElementById('archivoPlanEvaluacion');
+
+    if(!input){
+        alert('No se encontró el selector del archivo.');
+        return;
+    }
+
+    input.click();
 }
 
-document.getElementById('archivoPlanEvaluacion')?.addEventListener('change',async function(){
-    const archivo=this.files?.[0];
-    const ficha=document.getElementById('planFicha')?.value;
-    if(!archivo || !ficha){this.value='';return;}
-    const fd=new FormData(); fd.append('archivo',archivo);
+
+document.getElementById('archivoPlanEvaluacion')?.addEventListener('change', async function(){
+
+    const archivo = this.files?.[0];
+    const ficha = document.getElementById('planFicha')?.value;
+
+    if(!archivo){
+        this.value = '';
+        return;
+    }
+
+    if(!ficha){
+        alert('Seleccione primero una ficha.');
+        this.value = '';
+        return;
+    }
+
+    const fd = new FormData();
+
+    // Excel del plan de formación
+    fd.append('archivo', archivo);
+
+    // Ficha donde se guardará el plan
+    fd.append('id_ficha', ficha);
+
     try{
-        const data=await api(`/auxiliar/fichas/${ficha}/plan-evaluacion`,{method:'POST',body:fd});
-        mostrarMensaje(data.mensaje||'Plan de evaluación importado.');
-    }catch(e){alert(e.message)}
-    finally{this.value='';}
+
+        mostrarMensaje('Importando plan de formación...');
+
+        const data = await api('/importar_excel', {
+            method: 'POST',
+            body: fd
+        });
+
+        console.log('Importación exitosa:', data);
+
+        mostrarMensaje(
+            data.mensaje || 'Plan de formación importado correctamente.'
+        );
+
+        // Recargar el plan de la ficha seleccionada
+        await cargarPlan();
+
+        // Actualizar información de las fichas
+        await cargarFichas();
+
+    }catch(e){
+
+        console.error('Error al importar el plan de formación:', e);
+
+        alert(
+            e.message ||
+            'No se pudo importar el plan de formación.'
+        );
+
+    }finally{
+
+        this.value = '';
+
+    }
+
 });
 
 

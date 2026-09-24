@@ -1357,3 +1357,22 @@ main,
         border-bottom: none;
     }
 }
+
+/* Encabezado fijo respecto a la ventana */
+.tabla-contenedor {
+    overflow: clip;              /* mantiene los bordes redondeados sin crear scroll */
+}
+
+.tabla-contenedor .tabla-scroll {
+    max-height: none;
+    overflow-x: clip !important; /* antes hidden: convertía el eje Y en scroll */
+    overflow-y: visible !important;
+}
+
+.tabla-contenedor .tabla-actividades thead th {
+    position: sticky;
+    top: 0;                      /* si tienes una barra fija arriba, usa su altura */
+    z-index: 10;
+    background: #f8fafc;
+    box-shadow: inset 0 -1px 0 var(--linea);
+}
